@@ -1,0 +1,129 @@
+<html>
+	<head>
+		<script type="text/javascript" src="jquery.js"></script>
+		<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="../validator.js"></script>
+		<script type="text/javascript" src="validaciones.js"></script>
+		<script type="text/javascript" src="pattern_matcher.js"></script>
+		<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"/>
+	</head>
+	<body>
+		<div class="container">
+			<h3 style="text-align:center;">Formulario</h3>
+			<form class="form-horizontal" id="formulario">
+				<div class="form-group">
+					<label class="col-sm-2 control-label">Nombre</label>
+					<div class="col-sm-4 ">
+						<input type="text" class="form-control texto" id="txtNombre" placeholder="Nombre" >
+					</div>
+					<label class="col-sm-2 control-label">Apellido</label>
+					<div class="col-sm-4 ">
+						<input type="text" class="form-control texto" id="txtApellido" placeholder="Apellido" >
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-2 control-label">Fecha de nacimiento</label>
+					<div class="col-sm-4 ">
+						<input type="text" class="form-control" id="txtNacimiento" placeholder="dd/mm/aaaa">
+					</div>
+					<label class="col-sm-2 control-label">Sexo</label>
+					<div class="col-sm-4" id="divSexo">
+						<label class="radio-inline">
+							<input type="radio" name="radSexo" id="optionsRadios1" value="h">
+							Hombre
+						</label>
+						<label class="radio-inline">
+							<input type="radio" name="radSexo" id="optionsRadios2" value="m">
+							Mujer
+						</label>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-2 control-label">Email</label>
+					<div class="col-sm-4 ">
+						<input type="text" class="form-control" id="txtEmail" placeholder="e-mail">
+					</div>
+					<label class="col-sm-2 control-label">Teléfono</label>
+					<div class="col-sm-4 ">
+						<input type="text" class="form-control" id="txtTelefono" placeholder="Teléfono">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-2 control-label">Edad</label>
+					<div class="col-sm-4">
+						<input type="text" class="form-control" id="txtEdad" placeholder="Edad">
+					</div>
+					<label class="col-sm-2 control-label">Estatura</label>
+					<div class="col-sm-4">
+						<input type="text" class="form-control" id="txtEstatura" placeholder="Estatura">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-2 control-label">Nacionalidad</label>
+					<div class="col-sm-4">
+						<select class="form-control" id="slcNacionalidad">
+							<option value="-1">Seleccione</option>
+							<option value="0">Argentina</option>
+							<option value="1">Mexico</option>
+							<option value="2">Paraguay</option>
+							<option value="3">Uruguay</option>
+						</select>
+					</div>
+					<label class="col-sm-2 control-label">DNI</label>
+					<div class="col-sm-4 ">
+						<input type="text" class="form-control" id="txtDni" placeholder="DNI" >
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-2 control-label">Domicilio</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="txtDomicilio" placeholder="Domicilio" >
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-2 control-label">Estudios</label>
+					<div class="col-sm-10" id="divEstudios">
+						<div class="checkbox">
+							<label>
+								<input type="checkbox" name='chkEstudios' id="chkUniversidad"> Universitarios
+							</label>
+						</div>
+						<div class="checkbox">
+							<label>
+								<input type="checkbox" name='chkEstudios'> Secundarios
+							</label>
+						</div>
+						<div class="checkbox">
+							<label>
+								<input type="checkbox" name='chkEstudios'> Primarios
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						<button type="submit" class="btn btn-primary" id="btnRegistrar">Enviar</button>
+					</div>
+				</div>
+			</form>
+			<hr/>
+			<form class="form-horizontal" id="formulario2">
+				<div class="form-group">
+					<label class="col-sm-2 control-label">Nombre</label>
+					<div class="col-sm-4 ">
+						<input type="text" class="form-control texto" id="txtUsuario" placeholder="Nombre de usuario" >
+					</div>
+					<label class="col-sm-2 control-label">Password</label>
+					<div class="col-sm-4 ">
+						<input type="password" class="form-control texto" id="txtPassword" placeholder="Password" >
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						<button type="submit" class="btn btn-primary" id="btnRegistrar">Enviar</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</body>
+</html>

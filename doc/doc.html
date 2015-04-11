@@ -1,0 +1,123 @@
+<html>
+	<head>
+		<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"/>
+	</head>
+	<body>
+		<div class="container" style="padding-top:10px;">
+			<div class="row">
+				<div class="col-sm-12">
+					<h2>
+						ValidatorJS Docs
+					</h2>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+								createValidator($form, validationTrigger, options)
+						</div>
+						<div class="panel-body">
+							<h5>Parmámetros</h5>
+							<ul class="parameters">
+								<li>
+									$form: objeto jquery que representa el formulario.
+								</li>
+								<li>
+									validationTrigger: puede ser:
+									<ul>
+										<li>VALIDATE_ON_SUBMIT: las valdaciones se disparan al enviar el formuario.</li>
+										<li>VALIDATE_ON_BLUR: las valdaciones se disparan al abandonar cada campo del formulario.</li>
+										<li>VALIDATE_ON_CHANGE: las valdaciones se disparan al cambiar cada campo del formulario.</li>
+									</ul>
+								</li>
+								<li>options: JSON con propiedades:
+									<ul>
+										<li>validValidation: función callback al comprobar una validación válida en un campo.</li>
+										<li>invalidValidation: función callback al comprobar una validación inválida en un campo.</li>
+										<li>validField: función callback al comprobar que todas las validaciones en un campo son válidas.</li>
+										<li>invalidField: función callback al comprobar que al menos una de las validaciones en un campo es inválida.</li>
+										<li>validForm: functión callback al comprobar que todo el formulario es válido.</li>
+										<li>invalidForm: functión callback al comprobar que al menos un campo en el formulario es inválido.</li>
+									</ul>
+								</li>
+							</ul>
+							<hr/>
+							<h5>Funciones callback</h5>
+							<ul>
+								<li>validValidation(options:{
+								event: "Evento",
+								validation: "Objeto validation",
+								field: "$Campo",
+								message: "Mensaje de validación"
+							})	</li>
+								<li>invalidValidation(options:{
+								event: "Evento",
+								validation: "Objeto validation",
+								field: "$Campo",
+								message: "Mensaje de validación"
+							})</li>
+								<li>validField({
+								event: "Evento",
+								field: "$Campo",
+								messages: "Array de mensajes"
+							})</li>
+								<li>invalidField({
+								event: "Evento",
+								field: "$Campo",
+								messages: "Array de mensajes"
+							})</li>
+								<li>validForm({
+								event: "Evento",
+								validator: "Objeto validator",
+								form: "$Formulario"
+							})</li>
+								<li>invalidForm({
+								event: "Evento",
+								validator: "Objeto validator",
+								form: "$Formulario"
+							})</li>
+							</ul>
+						</div>
+					</div>
+					<div class="panel panel-default">
+						<div class="panel-heading">
+								addValidation(field, validationType, optionalParameters)
+						</div>
+						<div class="panel-body">
+						</div>
+					</div>
+					<div class="panel panel-default">
+						<div class="panel-heading">
+								removeValidation(field, validationType)
+						</div>
+						<div class="panel-body">
+						</div>
+					</div>
+					<div class="panel panel-default">
+						<div class="panel-heading">
+								addCustomValidation(id, method)
+						</div>
+						<div class="panel-body">
+						</div>
+					</div>
+					<div class="panel panel-default">
+						<div class="panel-heading">
+								getCustomValidation(id)
+						</div>
+						<div class="panel-body">
+						</div>
+					</div>
+					<div class="panel panel-default">
+						<div class="panel-heading">
+								removeCustomValidation(id)
+						</div>
+						<div class="panel-body">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

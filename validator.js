@@ -1,4 +1,4 @@
-var v = (function () {
+﻿var v = (function () {
     var myself = {};
 
     /////////////////////funciones de la libreria
