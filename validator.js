@@ -533,16 +533,11 @@ var ValidatorJS = (function () {
                     if (customValidation === undefined || customValidation === null) {
                         return false;
                     }
-					var length = instance.field.val().trim().length;
-					if(length > 0){
-						var parameters = instance.parameters.parameters;
-						if(parameters !== undefined){
-							return customValidation.method(instance.field, parameters);
-						}
-						return customValidation.method(instance.field);
+					var parameters = instance.parameters.parameters;
+					if(parameters !== undefined){
+						return customValidation.method(instance.field, parameters);
 					}
-					return true;
-                    break;
+					return customValidation.method(instance.field);
 				case(Validation.prototype.VALIDATION_TYPE_COMPARE):
 					//implementacion futuras
 					//usos posibles: igualdad de strings, check del tipo de dato, mayor menor igual en campos y checkboxs seleccionados, etc...
