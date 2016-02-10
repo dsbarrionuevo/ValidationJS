@@ -168,11 +168,14 @@ var ValidatorJS = (function () {
         this.invalidForm = agrs.invalidForm;
         this.validate = function (evt) {
             var validForm = true;
-            for (field in instance.validations) {
+            for (var field in instance.validations) {
                 //la propiedad campo es el id del campo en si
+                var validationsForField = instance.validations[field];
+                if (validationsForField.length === 0) {
+                    continue;
+                }
                 var validField = true;
                 var messagesForField = [];
-                var validationsForField = instance.validations[field];
                 var targetField = null;
                 for (var i = 0; i < validationsForField.length; i++) {
                     var validationForField = validationsForField[i];
@@ -235,7 +238,7 @@ var ValidatorJS = (function () {
         };
         this.callFormFunctions = function (parameters, result) {
             if (!result) {
-                //si el formulario es invalido, DEBO impdir que se env\EDe... en todos los casos
+                //si el formulario es invalido, DEBO impdir que se envíe... en todos los casos
                 if (parameters.event !== undefined) {
                     parameters.event.preventDefault();
                 }
@@ -439,7 +442,6 @@ var ValidatorJS = (function () {
 							}
 						});
 					}
-					console.log("asasd");
 					if(instance.validator.hasValidation(instance.field, Validation.prototype.VALIDATION_TYPE_REQUIRED)){
 						return selected;
 					}
