@@ -550,7 +550,7 @@ var ValidatorJS = (function () {
         };
 		this.validate = function(){
 			return instance.applyValidation();
-		}
+		};
 	}
     //Funciones utiles
     function getType($element) {
@@ -610,23 +610,24 @@ var ValidatorJS = (function () {
 		};
 		this.removeValidation = function (field, validationType) {
 			instance.validator.removeValidationForField(field, validationType);
-		}
+		};
 	}
 	
 	//public functions
     myself.createValidator = function (form, validatorType, optionalParameters) {
+        var parameters = optionalParameters || {};
 		var newValidatorInstance = new ValidatorInstance(
 			myself.validators.length,
 			new Validator({
 				form: form,
 				validationEvent: validatorType,
-				message: optionalParameters.message,
-				validValidation: optionalParameters.validValidation,
-				invalidValidation: optionalParameters.invalidValidation,
-				validField: optionalParameters.validField,
-				invalidField: optionalParameters.invalidField,
-				validForm: optionalParameters.validForm,
-				invalidForm: optionalParameters.invalidForm
+				message: parameters.message,
+				validValidation: parameters.validValidation,
+				invalidValidation: parameters.invalidValidation,
+				validField: parameters.validField,
+				invalidField: parameters.invalidField,
+				validForm: parameters.validForm,
+				invalidForm: parameters.invalidForm
 			})
 		);
 		myself.validators.push(newValidatorInstance);
