@@ -1,4 +1,4 @@
-ï»¿var v = (function () {
+var ValidatorJS = (function () {
     var myself = {};
 
     /////////////////////funciones de la libreria
@@ -235,7 +235,7 @@
         };
         this.callFormFunctions = function (parameters, result) {
             if (!result) {
-                //si el formulario es invalido, DEBO impdir que se envíe... en todos los casos
+                //si el formulario es invalido, DEBO impdir que se env\EDe... en todos los casos
                 if (parameters.event !== undefined) {
                     parameters.event.preventDefault();
                 }
