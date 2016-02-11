@@ -103,4 +103,17 @@ $(document).ready(function(){
 		evt.preventDefault();
 	});
 	
+	//
+	var validator3 = ValidatorJS.createValidator($("#btnEnviar"), ValidatorJS.VALIDATE_ON_SUBMIT, 
+	{
+		validValidation: validacionValida,
+		invalidValidation: validacionInvalida,
+		validField: campoValido,
+		invalidField: campoInvalido,
+		validForm: formularioValido,
+		invalidForm: formularioInvalido
+	});
+
+	validator3.addValidation($("#txtNombre2"), ValidatorJS.VALIDATION_TYPE_REQUIRED);
+	validator3.addValidation($("#txtApellido2"), ValidatorJS.VALIDATION_TYPE_REQUIRED);
 });

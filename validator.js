@@ -12,9 +12,15 @@ var ValidatorJS = (function () {
         this.form = agrs.form;
         this.message = agrs.message;
         this.validationEvent = agrs.validationEvent;
-        instance.form.submit(function (evt) {
-            instance.validate(evt);
-        });
+        if(this.form[0].tagName == "FORM"){
+            instance.form.submit(function (evt) {
+                instance.validate(evt);
+            });
+        }else if(this.form[0].tagName == "BUTTON"){
+            instance.form.click(function (evt) {
+                instance.validate(evt);
+            });
+        }
         //array asociativo, utiliza como clave el id del campo pasado y como valor un array numerico de validaciones
         this.validations = {};
         this.addValidationForField = function (targetField, validationObject) {
