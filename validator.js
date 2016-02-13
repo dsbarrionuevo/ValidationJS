@@ -1,28 +1,40 @@
 var ValidatorJS = (function () {
     var myself = {};
 
-    /////////////////////funciones de la libreria
+    ///////////////////// Funciones privadas
 
-    Validator.prototype.VALIDATE_ON_SUBMIT = 0;//valida al submittear el formulario//submit
-    Validator.prototype.VALIDATE_ON_BLUR = 1;//valida al hacer blur del campo//blur
-    Validator.prototype.VALIDATE_ON_CHANGE = 2;//valida al cambiar el texto del campo//change
-    //clase asociada a un formulario
+    // Valida al submittear el formulario: evento submit
+    Validator.prototype.VALIDATE_ON_SUBMIT = 0;
+    
+    // Valida al hacer blur del campo: evento blur
+    Validator.prototype.VALIDATE_ON_BLUR = 1;
+    
+    // Valida al cambiar el texto del campo: evento change
+    Validator.prototype.VALIDATE_ON_CHANGE = 2;
+    
+    // Clase asociada a un formulario
     function Validator(agrs) {
         var instance = this;
-        this.form = agrs.form;
+        this.form_or_button = agrs.form_or_button;
         this.message = agrs.message;
         this.validationEvent = agrs.validationEvent;
-        if(this.form[0].tagName == "FORM"){
-            instance.form.submit(function (evt) {
+
+        if(this.form_or_button[0].tagName == "FORM"){
+            instance.form_or_button.submit(function (evt) {
                 instance.validate(evt);
             });
-        }else if(this.form[0].tagName == "BUTTON"){
-            instance.form.click(function (evt) {
+        }else if(this.form_or_button[0].tagName == "BUTTON"){
+            instance.form_or_button.click(function (evt) {
                 instance.validate(evt);
             });
+        }else{
+            throw "Invalid argument";
         }
-        //array asociativo, utiliza como clave el id del campo pasado y como valor un array numerico de validaciones
+
+        // Array asociativo: utiliza como clave el id del campo pasado y como valor un array numerico de validaciones
+        // Este array mantiene las validaciones que se deberán realizar por cada campo.
         this.validations = {};
+
         this.addValidationForField = function (targetField, validationObject) {
             var target = targetField.get(0).id;
             var countFields = 0;
@@ -215,7 +227,7 @@ var ValidatorJS = (function () {
             instance.callFormFunctions({
                 event: evt,
                 validator: instance,
-                form: instance.form
+                form: instance.form_or_button
             }, validForm);
             return validForm;
         };
@@ -619,13 +631,19 @@ var ValidatorJS = (function () {
 		};
 	}
 	
-	//public functions
-    myself.createValidator = function (form, validatorType, optionalParameters) {
+	///////////////////// Funciones públicas
+
+    /*
+        Crea un validador a partir de un objeto jQuery formulario (tagName=FORM)
+        o un botón (tagName=BUTTON), una constante que indica cuándo se debe
+        ejecutar las validaciones y parámetros opcionales.
+    */
+    myself.createValidator = function (form_or_button, validatorType, optionalParameters) {
         var parameters = optionalParameters || {};
 		var newValidatorInstance = new ValidatorInstance(
 			myself.validators.length,
 			new Validator({
-				form: form,
+				form_or_button: form_or_button,
 				validationEvent: validatorType,
 				message: parameters.message,
 				validValidation: parameters.validValidation,
@@ -639,6 +657,9 @@ var ValidatorJS = (function () {
 		myself.validators.push(newValidatorInstance);
 		return newValidatorInstance;
     };
+
+    // Funciones que permiten agregar, obtener y eliminar una validación personalizada.
+
     myself.addCustomValidation = function (id, method) {
         Validation.prototype.addCustomValidation({
             id: id,
@@ -652,10 +673,15 @@ var ValidatorJS = (function () {
         return Validation.prototype.removeCustomValidation(id);
     };
 
-    //constantes
+    ///////////////////// Constantes públicas
+
+    // Indican cuándo ejecutar la validación.
+
     myself.VALIDATE_ON_SUBMIT = Validator.prototype.VALIDATE_ON_SUBMIT;
     myself.VALIDATE_ON_BLUR = Validator.prototype.VALIDATE_ON_BLUR;
     myself.VALIDATE_ON_CHANGE = Validator.prototype.VALIDATE_ON_CHANGE;
+
+    // Indican el tipo de validación.
 
     myself.VALIDATION_TYPE_REQUIRED = Validation.prototype.VALIDATION_TYPE_REQUIRED;
     myself.VALIDATION_TYPE_LENGTH = Validation.prototype.VALIDATION_TYPE_LENGTH;
