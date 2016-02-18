@@ -351,8 +351,11 @@ var ValidatorJS = (function () {
                             instance.fieldType === "email") {
                         return value.length > 0;
                     } else if (instance.fieldType === "select") {
-                        //valores menores a 0 no son validos para un select requerido
-                        return parseInt(value) > -1;
+                        // Valor igual a -1 no es válido para un select requerido
+                        if(isNaN(value)){
+                            return true;
+                        }
+                        return parseInt(value) !== -1;
                     } else {
 						//para requerir radio o checkboxes deberia pasar un tipoCampo explicito
 						//---> Aca deberia hacer algo en serio util, es decir, comprobar que al menos un radio o un check
