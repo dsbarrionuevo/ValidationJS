@@ -372,12 +372,30 @@ var ValidatorJS = (function () {
                     if (isNaN(value)) {
                         return false;
                     }
-					var length = instance.field.val().trim().length;
-					if(length > 0){
-						return /^-?\d+?$/.test(value);
-					}
-					return true;
-                    break;
+                    var length = instance.field.val().trim().length;
+                    if(length === 0) return true;
+                    var isInt = /^-?\d+?$/.test(value);
+                    if(isInt){
+                        var min = instance.parameters.min;
+                        var max = instance.parameters.max;
+                        if(min === undefined || max === undefined){
+					        return true;
+                        }else{
+                            var int = parseInt(value);
+                            if(min !== undefined){
+                                if(int < min) {
+								    return false;
+							    }
+                            }
+                            if(max !== undefined){
+                                if(int > max){
+                                    return false;
+                                }
+                            }
+                            return true;
+                        }
+                    }
+                    return false;
                 case(Validation.prototype.VALIDATION_TYPE_DECIMAL):
                     if (isNaN(value)) {
                         return false;
