@@ -382,6 +382,9 @@ var ValidatorJS = (function () {
                         return true;
                     var isInt = /^-?\d+?$/.test(value);
                     if(isInt){
+                        if(instance.parameters === undefined){
+                            return true;
+                        }
                         var min = instance.parameters.min;
                         var max = instance.parameters.max;
                         if(min === undefined || max === undefined){
