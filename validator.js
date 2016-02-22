@@ -373,7 +373,13 @@ var ValidatorJS = (function () {
                         return false;
                     }
                     var length = instance.field.val().trim().length;
-                    if(length === 0) return true;
+                    if (instance.parameters !== undefined) {
+                        var required = instance.parameters.required;
+                        if (required !== undefined && required && length === 0)
+                            return false;
+                    }
+                    if (length === 0)
+                        return true;
                     var isInt = /^-?\d+?$/.test(value);
                     if(isInt){
                         var min = instance.parameters.min;
