@@ -422,21 +422,19 @@ var ValidatorJS = (function () {
                     if (instance.parameters === undefined) {
                         return false;
                     }
-					if(instance.validator.hasValidation(instance.field,Validation.prototype.VALIDATION_TYPE_REQUIRED)){
-						var min = instance.parameters.min;
-						var max = instance.parameters.max;
-						if (min === undefined && max === undefined) {
+                    var min = instance.parameters.min;
+					var max = instance.parameters.max;
+					if (min === undefined && max === undefined) {
+						return false;
+					}
+					if (min !== undefined) {
+						if (valueLength < min) {
 							return false;
 						}
-						if (min !== undefined) {
-							if (valueLength < min) {
-								return false;
-							}
-						}
-						if (max !== undefined) {
-							if (valueLength > max) {
-								return false;
-							}
+					}
+					if (max !== undefined) {
+						if (valueLength > max) {
+							return false;
 						}
 					}
                     return true;

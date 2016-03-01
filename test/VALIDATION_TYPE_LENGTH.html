@@ -1,0 +1,54 @@
+<html>
+	<head>
+		<script type="text/javascript" src="jquery.js"></script>
+		<script type="text/javascript" src="../validator.js"></script>
+		<script type="text/javascript">
+		    function validacionValida(args){
+		        console.log(args.field.attr("id") + " %cvalidValidation", "background: green; color: white");
+		    }
+		    function validacionInvalida(args){
+    		    console.log(args.field.attr("id") + " %cinvalidValidation", "background: red; color: white");
+		    }
+		    function campoValido(args){
+    		    console.log(args.field.attr("id") + " %cvalidField", "background: green; color: white");
+		    }
+		    function campoInvalido(args){
+    		    console.log(args.field.attr("id") + " %cinvalidField", "background: red; color: white");
+		    }
+		    function formularioValido(args){
+		        alert("FORMULARIO CORRECTO");
+		    }
+		    function formularioInvalido(args){
+    		    console.log("%cinvalidForm", "background: red; color: white");
+		    }
+		    $(document).ready(function(){
+		        var validator = ValidatorJS.createValidator($("#formulario"), ValidatorJS.VALIDATE_ON_SUBMIT, 
+            	{
+            		validValidation: validacionValida,
+            		invalidValidation: validacionInvalida,
+            		validField: campoValido,
+            		invalidField: campoInvalido,
+            		validForm: formularioValido,
+            		invalidForm: formularioInvalido
+            	});
+            	validator.addValidation($("#txt1"), ValidatorJS.VALIDATION_TYPE_LENGTH, {max: 10});
+
+            	validator.addValidation($("#txt2"), ValidatorJS.VALIDATION_TYPE_LENGTH, {min: 5, max: 10});
+
+            	validator.addValidation($("#txt3"), ValidatorJS.VALIDATION_TYPE_REQUIRED);
+            	validator.addValidation($("#txt3"), ValidatorJS.VALIDATION_TYPE_LENGTH, {max: 10});
+		    });
+		</script>
+	</head>
+	<body>
+		<div class="container">
+			<h3 style="text-align:center;">Formulario VALIDATION_TYPE_LENGTH</h3>
+			<form id="formulario">
+			    Máx. 10 caracteres&nbsp<input type="text" id="txt1" name="txt1" /><br/><br/>
+			    Máx. 10 y mín 5 caracteres&nbsp<input type="text" id="txt2" name="txt2" /><br/><br/>
+			    Máx. 10 caracteres y requerido&nbsp<input type="text" id="txt3" name="txt3" />
+			    <input type="submit" id="btnEnviar" name="btnEnviar" />
+			</form>
+		</div>
+	</body>
+</html>
