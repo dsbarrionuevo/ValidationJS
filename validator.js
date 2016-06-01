@@ -5,13 +5,13 @@ var ValidatorJS = (function () {
 
     // Valida al submittear el formulario: evento submit
     Validator.prototype.VALIDATE_ON_SUBMIT = 0;
-    
+
     // Valida al hacer blur del campo: evento blur
     Validator.prototype.VALIDATE_ON_BLUR = 1;
-    
+
     // Valida al cambiar el texto del campo: evento change
     Validator.prototype.VALIDATE_ON_CHANGE = 2;
-    
+
     // Clase asociada a un formulario
     function Validator(agrs) {
         var instance = this;
@@ -19,15 +19,15 @@ var ValidatorJS = (function () {
         this.message = agrs.message;
         this.validationEvent = agrs.validationEvent;
 
-        if(this.form_or_button[0].tagName == "FORM"){
+        if (this.form_or_button[0].tagName == "FORM") {
             instance.form_or_button.submit(function (evt) {
                 instance.validate(evt);
             });
-        }else if(this.form_or_button[0].tagName == "BUTTON"){
+        } else if (this.form_or_button[0].tagName == "BUTTON") {
             instance.form_or_button.click(function (evt) {
                 instance.validate(evt);
             });
-        }else{
+        } else {
             throw "Invalid argument";
         }
 
@@ -61,8 +61,8 @@ var ValidatorJS = (function () {
                 instance.validations[target] = [validationObject];
             }
         };
-        this.getValidation = function(targetField, validationType){
-			var target = targetField.get(0).id;
+        this.getValidation = function (targetField, validationType) {
+            var target = targetField.get(0).id;
             for (field in instance.validations) {
                 if (field === target) {
                     for (var i = 0; i < instance.validations[target].length; i++) {
@@ -72,12 +72,12 @@ var ValidatorJS = (function () {
                     }
                 }
             }
-			return null;
-		};
-		this.hasValidation = function(targetField, validationType){
-			return (instance.getValidation(targetField, validationType) !== null);
-		};
-		this.removeValidationForField = function (targetField, validationType) {
+            return null;
+        };
+        this.hasValidation = function (targetField, validationType) {
+            return (instance.getValidation(targetField, validationType) !== null);
+        };
+        this.removeValidationForField = function (targetField, validationType) {
             var target = targetField.get(0).id;
             for (field in instance.validations) {
                 if (field === target) {
@@ -98,7 +98,7 @@ var ValidatorJS = (function () {
                     field: validationObject.field,
                     validationType: validationObject.validations[i].validationType,
                     parameters: validationObject.validations[i].parameters,
-					validator: instance,
+                    validator: instance,
                     message: validationObject.validations[i].message
                 }));
             }
@@ -286,18 +286,31 @@ var ValidatorJS = (function () {
     //
     Validation.prototype.customValidations = [];
     /*
-    customValidacion: {
-        id: "myId",
-        method: function(field, parameters){ return true; }
-    }
-    */
+     
+     */
+    /**
+     * Agrega la validación a la lista de validaciones personalizadas, retorna 
+     * 'true' si ha podido agregar la validación (sólo cuando en la lista de 
+     * validaciones personalizadas no existe ya una validación con el mismo id),
+     * 'false' en caso contratio.
+     * @param {type} customValidation Objecto que representa la validación 
+     * personalizada de la siguiente forma: 
+     *  customValidacion: {
+     *      id: "myId",
+     *      method: function(field, parameters){ return boolean; }
+     *      }
+     * @returns {Boolean} 'True' si se pudo agregar la validación personalizada,
+     * 'false' en caso contratio.
+     */
     Validation.prototype.addCustomValidation = function (customValidation) {
         if (Validation.prototype.getCustomValidation(customValidation.id) === null) {
             Validation.prototype.customValidations.push({
                 id: customValidation.id,
                 method: customValidation.method
             });
+            return true;
         }
+        return false;
     };
     Validation.prototype.getCustomValidation = function (id) {
         for (var i = 0; i < Validation.prototype.customValidations.length; i++) {
@@ -324,6 +337,8 @@ var ValidatorJS = (function () {
         var instance = this;
         this.field = agrs.field;
         if (instance.field !== null && instance.field !== undefined) {
+            //this.fieldType podría ser: text, password, radio, checkbox, reset, 
+            //button, submit (y los de html5...), también textarea, select.
             this.fieldType = getType(instance.field);
         } else {
             this.fieldType = undefined;
@@ -339,28 +354,42 @@ var ValidatorJS = (function () {
                 });
             }
         }
-		this.validator = agrs.validator;
+        this.validator = agrs.validator;
+        //es el mensaje de error
         this.message = agrs.message;
         this.applyValidation = function () {
+            //deberia verificar que posea el atributo value
             var value = instance.field.val().trim();
             switch (instance.validationType) {
                 case(Validation.prototype.VALIDATION_TYPE_REQUIRED):
-                    if (instance.fieldType === "text" ||
-                            instance.fieldType === "password" ||
-                            instance.fieldType === "number" ||
-                            instance.fieldType === "email") {
+                    if (checkAttributeMatches(instance.fieldType, ["text", "password", "number", "email"])) {
                         return value.length > 0;
                     } else if (instance.fieldType === "select") {
-                        // Valor igual a -1 no es vÃ¡lido para un select requerido
-                        if(isNaN(value)){
+                        //en caso de que el select posea cadenas por ejemplo, y 
+                        //queremos setear la cadena "vacio" como opcion vacía, 
+                        //debemos setearle como que lo represente el sigueinte 
+                        //invalidRequiredValue, el mismo será tratado como cadena.
+                        if (instance.parameters !== undefined && instance.parameters.invalidRequiredValue !== undefined) {
+                            return (value === instance.parameters.invalidRequiredValue);
+                        }
+                        //para un uso más genérico permito que agrega una función 
+                        //que recibe como parámetro el valor actua seleccionado en 
+                        //el select y retorna true si es válido y false en caso contrario
+                        if (instance.parameters !== undefined && instance.parameters.checkRequiredMethod !== undefined) {
+                            return instance.parameters.checkRequiredMethod(value);
+                        }
+                        // Valor igual a -1 no es válido para un select requerido
+                        if (isNaN(value)) {
                             return true;
                         }
+                        //como fallback compara con un int y el mismo debe ser 
+                        //distinto a -1 para ser válido
                         return parseInt(value) !== -1;
                     } else {
-						//para requerir radio o checkboxes deberia pasar un tipoCampo explicito
-						//---> Aca deberia hacer algo en serio util, es decir, comprobar que al menos un radio o un check
-						//estan seleccionados, pero esa comprobacion la hago en el mismo validation_type_check o radio
-						//por eso aqui solo devuelvo true...
+                        //para requerir radio o checkboxes deberia pasar un tipoCampo explicito
+                        //---> Aca deberia hacer algo en serio util, es decir, comprobar que al menos un radio o un check
+                        //estan seleccionados, pero esa comprobacion la hago en el mismo validation_type_check o radio
+                        //por eso aqui solo devuelvo true...
                         return true;
                     }
                     break;
@@ -381,23 +410,23 @@ var ValidatorJS = (function () {
                     if (length === 0)
                         return true;
                     var isInt = /^-?\d+?$/.test(value);
-                    if(isInt){
-                        if(instance.parameters === undefined){
+                    if (isInt) {
+                        if (instance.parameters === undefined) {
                             return true;
                         }
                         var min = instance.parameters.min;
                         var max = instance.parameters.max;
-                        if(min === undefined || max === undefined){
-					        return true;
-                        }else{
+                        if (min === undefined || max === undefined) {
+                            return true;
+                        } else {
                             var int = parseInt(value);
-                            if(min !== undefined){
-                                if(int < min) {
-								    return false;
-							    }
+                            if (min !== undefined) {
+                                if (int < min) {
+                                    return false;
+                                }
                             }
-                            if(max !== undefined){
-                                if(int > max){
+                            if (max !== undefined) {
+                                if (int > max) {
                                     return false;
                                 }
                             }
@@ -409,11 +438,11 @@ var ValidatorJS = (function () {
                     if (isNaN(value)) {
                         return false;
                     }
-					var length = instance.field.val().trim().length;
-					if(length > 0){
-						return /^-?\d+(\.\d+)?$/.test(value);
-					}
-					return true;
+                    var length = instance.field.val().trim().length;
+                    if (length > 0) {
+                        return /^-?\d+(\.\d+)?$/.test(value);
+                    }
+                    return true;
                     break;
                 case(Validation.prototype.VALIDATION_TYPE_LENGTH):
                     //si solo seteo una longitud maxima y no una minima, el campo puede ser vacio y esto lo toma como valido...
@@ -423,27 +452,27 @@ var ValidatorJS = (function () {
                         return false;
                     }
                     var min = instance.parameters.min;
-					var max = instance.parameters.max;
-					if (min === undefined && max === undefined) {
-						return false;
-					}
-					if (min !== undefined) {
-						if (valueLength < min) {
-							return false;
-						}
-					}
-					if (max !== undefined) {
-						if (valueLength > max) {
-							return false;
-						}
-					}
+                    var max = instance.parameters.max;
+                    if (min === undefined && max === undefined) {
+                        return false;
+                    }
+                    if (min !== undefined) {
+                        if (valueLength < min) {
+                            return false;
+                        }
+                    }
+                    if (max !== undefined) {
+                        if (valueLength > max) {
+                            return false;
+                        }
+                    }
                     return true;
                     break;
                 case(Validation.prototype.VALIDATION_TYPE_VALUE):
                     if (isNaN(value)) {
                         return false;
                     }
-					if (instance.parameters === undefined) {
+                    if (instance.parameters === undefined) {
                         return false;
                     }
                     //no funcionaria con un decimal, rever
@@ -466,35 +495,35 @@ var ValidatorJS = (function () {
                     return true;
                     break;
                 case(Validation.prototype.VALIDATION_TYPE_EMAIL):
-					var length = instance.field.val().trim().length;
-					if(length > 0){
-						return /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(value);
-					}
-					return true;
+                    var length = instance.field.val().trim().length;
+                    if (length > 0) {
+                        return /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(value);
+                    }
+                    return true;
                     break;
                 case(Validation.prototype.VALIDATION_TYPE_RADIO_GROUP):
-					var selected = false;
+                    var selected = false;
                     if (instance.parameters !== undefined && instance.parameters.group !== undefined) {
                         var groupName = instance.parameters.group;
-						$("input[type='radio'][name='" + groupName + "']").each(function () {
-							if ($(this).is(":checked")) {
-								selected = true;
-							}
-						});
-                    }else{
-						instance.field.find("input[type='radio']").each(function () {
-							if ($(this).is(":checked")) {
-								selected = true;
-							}
-						});
-					}
-					if(instance.validator.hasValidation(instance.field, Validation.prototype.VALIDATION_TYPE_REQUIRED)){
-						return selected;
-					}
+                        $("input[type='radio'][name='" + groupName + "']").each(function () {
+                            if ($(this).is(":checked")) {
+                                selected = true;
+                            }
+                        });
+                    } else {
+                        instance.field.find("input[type='radio']").each(function () {
+                            if ($(this).is(":checked")) {
+                                selected = true;
+                            }
+                        });
+                    }
+                    if (instance.validator.hasValidation(instance.field, Validation.prototype.VALIDATION_TYPE_REQUIRED)) {
+                        return selected;
+                    }
                     return true;
                     break;
                 case(Validation.prototype.VALIDATION_TYPE_GROUP):
-					if (instance.parameters === undefined) {
+                    if (instance.parameters === undefined) {
                         return false;
                     }
                     if (instance.parameters.group === undefined) {
@@ -530,45 +559,45 @@ var ValidatorJS = (function () {
                     break;
                 case(Validation.prototype.VALIDATION_TYPE_CHECKBOX_GROUP):
                     var countSelecteds = 0;
-					if (instance.parameters !== undefined && instance.parameters.group !== undefined) {
-						var groupName = instance.parameters.group;
-						$("input[type='checkbox'][name='" + groupName + "']").each(function () {
-							if ($(this).is(":checked")) {
-								countSelecteds++;
-							}
-						});
-					}else{
-						instance.field.find("input[type='checkbox']").each(function () {
-							if ($(this).is(":checked")) {
-								countSelecteds++;
-							}
-						});
-					}
-					//solo si es requerido, el comportamiento por defeto es ahora no validar a no ser que sea campo requerido
-					if(instance.validator.hasValidation(instance.field, Validation.prototype.VALIDATION_TYPE_REQUIRED)){
-						if(instance.parameters === undefined){
-							return countSelecteds >= 1;
-						}
-						var min = instance.parameters.min;
-						var max = instance.parameters.max;
-						if (min === undefined && max === undefined) {
-							return countSelecteds >= 1;
-						}
-						if (min !== undefined) {
-							if (countSelecteds < min) {
-								return false;
-							}
-						}
-						if (max !== undefined) {
-							if (countSelecteds > max) {
-								return false;
-							}
-						}
-					}
+                    if (instance.parameters !== undefined && instance.parameters.group !== undefined) {
+                        var groupName = instance.parameters.group;
+                        $("input[type='checkbox'][name='" + groupName + "']").each(function () {
+                            if ($(this).is(":checked")) {
+                                countSelecteds++;
+                            }
+                        });
+                    } else {
+                        instance.field.find("input[type='checkbox']").each(function () {
+                            if ($(this).is(":checked")) {
+                                countSelecteds++;
+                            }
+                        });
+                    }
+                    //solo si es requerido, el comportamiento por defeto es ahora no validar a no ser que sea campo requerido
+                    if (instance.validator.hasValidation(instance.field, Validation.prototype.VALIDATION_TYPE_REQUIRED)) {
+                        if (instance.parameters === undefined) {
+                            return countSelecteds >= 1;
+                        }
+                        var min = instance.parameters.min;
+                        var max = instance.parameters.max;
+                        if (min === undefined && max === undefined) {
+                            return countSelecteds >= 1;
+                        }
+                        if (min !== undefined) {
+                            if (countSelecteds < min) {
+                                return false;
+                            }
+                        }
+                        if (max !== undefined) {
+                            if (countSelecteds > max) {
+                                return false;
+                            }
+                        }
+                    }
                     return true;
                     break;
                 case(Validation.prototype.VALIDATION_TYPE_CUSTOM):
-					if (instance.parameters === undefined) {
+                    if (instance.parameters === undefined) {
                         return false;
                     }
                     var id = instance.parameters.id;
@@ -579,117 +608,134 @@ var ValidatorJS = (function () {
                     if (customValidation === undefined || customValidation === null) {
                         return false;
                     }
-					var parameters = instance.parameters.parameters;
-					if(parameters !== undefined){
-						return customValidation.method(instance.field, parameters);
-					}
-					return customValidation.method(instance.field);
-				case(Validation.prototype.VALIDATION_TYPE_COMPARE):
-					//implementacion futuras
-					//usos posibles: igualdad de strings, check del tipo de dato, mayor menor igual en campos y checkboxs seleccionados, etc...
-					return false;
-					break;
+                    var parameters = instance.parameters.parameters;
+                    if (parameters !== undefined) {
+                        return customValidation.method(instance.field, parameters);
+                    }
+                    return customValidation.method(instance.field);
+                case(Validation.prototype.VALIDATION_TYPE_COMPARE):
+                    //implementacion futuras
+                    //usos posibles: igualdad de strings, check del tipo de dato, mayor menor igual en campos y checkboxs seleccionados, etc...
+                    return false;
+                    break;
                 default:
                     return false;
                     break;
             }
         };
-		this.validate = function(){
-			return instance.applyValidation();
-		};
-	}
+        this.validate = function () {
+            return instance.applyValidation();
+        };
+    }
     //Funciones utiles
     function getType($element) {
         if ($element.get(0).tagName.toLowerCase() === "input") {
             return $element.get(0).type.toLowerCase();
         } else {
+            //para selects o textarea, por ejemplo
             return $element.get(0).tagName.toLowerCase();
         }
+    }
+    //comprueba que coincide con al menos uno de los valores pedidos
+    function checkAttributeMatches(attributeName, values) {
+        for (var i = 0; i < values.length; i++) {
+            if (attributeName === values[i]) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /////////////////////funciones del modulo
 
-	myself.validators = [];
+    myself.validators = [];
 
-	function ValidatorInstance(id, validator){
-		var instance = this;
-		this.id = id;
-		this.validator = validator;
-		this.addValidation = function (field, validationType, optionalParameters) {
-			var message = undefined;
-			var parameters = undefined;
-			if(optionalParameters !== undefined){
-				if(optionalParameters.message !== undefined){
-					message = optionalParameters.message;
-				}
-				if(optionalParameters.required !== undefined && optionalParameters.required === true){
-					instance.validator.addValidation({
-						field: field,
-						validations: [
-							{
-								validationType: Validation.prototype.VALIDATION_TYPE_REQUIRED
-							}
-						]
-					});
-				}
-				var hasValidationParameters = false;
-				for(optionalParameter in optionalParameters){
-					if(optionalParameter !== "message" && optionalParameter !== "required"){
-						if(hasValidationParameters === false){
-							parameters = {};
-						}
-						parameters[optionalParameter] = optionalParameters[optionalParameter];
-						hasValidationParameters = true;
-					}
-				}
-			}
-			instance.validator.addValidation({
-				field: field,
-				validations: [
-					{
-						validationType: validationType,
-						parameters: optionalParameters,
-						message: message
-					}
-				]
-			});
-		};
-		this.removeValidation = function (field, validationType) {
-			instance.validator.removeValidationForField(field, validationType);
-		};
-	}
-	
-	///////////////////// Funciones pÃºblicas
+    function ValidatorInstance(id, validator) {
+        var instance = this;
+        this.id = id;
+        this.validator = validator;
+        this.addValidation = function (field, validationType, optionalParameters) {
+            var message = undefined;
+            var parameters = undefined;
+            if (optionalParameters !== undefined) {
+                if (optionalParameters.message !== undefined) {
+                    message = optionalParameters.message;
+                }
+                //el parametro 'required' agrega automáticamente la validación 
+                //de tipo campo requerido, sin embargo no establece un mensaje 
+                //de específico.
+                if (optionalParameters.required !== undefined && optionalParameters.required === true) {
+                    instance.validator.addValidation({
+                        field: field,
+                        validations: [
+                            {
+                                validationType: Validation.prototype.VALIDATION_TYPE_REQUIRED
+                            }
+                        ]
+                    });
+                }
+                var hasValidationParameters = false;
+                for (var optionalParameter in optionalParameters) {
+                    //estos parámetros ya estaría contemplados...
+                    if (optionalParameter !== "message" && optionalParameter !== "required") {
+                        if (hasValidationParameters === false) {
+                            parameters = {};
+                        }
+                        parameters[optionalParameter] = optionalParameters[optionalParameter];
+                        hasValidationParameters = true;
+                    }
+                }
+            }
+            //en caso de que el objecto jQuery field sea un selector por clase, 
+            //aquí sería el lugar donde recorrería y agregaría la validación para 
+            //cada uno de ellos.
+            instance.validator.addValidation({
+                field: field,
+                validations: [
+                    {
+                        validationType: validationType,
+                        parameters: optionalParameters,
+                        message: message
+                    }
+                ]
+            });
+        };
+        this.removeValidation = function (field, validationType) {
+            instance.validator.removeValidationForField(field, validationType);
+        };
+    }
+
+    ///////////////////// Funciones pÃºblicas
 
     /*
-        Crea un validador a partir de un objeto jQuery formulario (tagName=FORM)
-        o un botÃ³n (tagName=BUTTON), una constante que indica cuÃ¡ndo se debe
-        ejecutar las validaciones y parÃ¡metros opcionales.
-    */
+     Crea un validador a partir de un objeto jQuery formulario (tagName=FORM)
+     o un botÃ³n (tagName=BUTTON), una constante que indica cuÃ¡ndo se debe
+     ejecutar las validaciones y parÃ¡metros opcionales.
+     */
     myself.createValidator = function (form_or_button, validatorType, optionalParameters) {
         var parameters = optionalParameters || {};
-		var newValidatorInstance = new ValidatorInstance(
-			myself.validators.length,
-			new Validator({
-				form_or_button: form_or_button,
-				validationEvent: validatorType,
-				message: parameters.message,
-				validValidation: parameters.validValidation,
-				invalidValidation: parameters.invalidValidation,
-				validField: parameters.validField,
-				invalidField: parameters.invalidField,
-				validForm: parameters.validForm,
-				invalidForm: parameters.invalidForm
-			})
-		);
-		myself.validators.push(newValidatorInstance);
-		return newValidatorInstance;
+        var newValidatorInstance = new ValidatorInstance(
+                myself.validators.length,
+                new Validator({
+                    form_or_button: form_or_button,
+                    validationEvent: validatorType,
+                    message: parameters.message,
+                    validValidation: parameters.validValidation,
+                    invalidValidation: parameters.invalidValidation,
+                    validField: parameters.validField,
+                    invalidField: parameters.invalidField,
+                    validForm: parameters.validForm,
+                    invalidForm: parameters.invalidForm
+                })
+                );
+        myself.validators.push(newValidatorInstance);
+        return newValidatorInstance;
     };
 
     // Funciones que permiten agregar, obtener y eliminar una validaciÃ³n personalizada.
 
     myself.addCustomValidation = function (id, method) {
-        Validation.prototype.addCustomValidation({
+        return Validation.prototype.addCustomValidation({
             id: id,
             method: method
         });
