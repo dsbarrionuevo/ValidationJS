@@ -19,11 +19,11 @@ var ValidatorJS = (function () {
         this.message = agrs.message;
         this.validationEvent = agrs.validationEvent;
 
-        if (this.form_or_button[0].tagName == "FORM") {
+        if (this.form_or_button[0].tagName.toLowerCase() == "form") {
             instance.form_or_button.submit(function (evt) {
                 instance.validate(evt);
             });
-        } else if (this.form_or_button[0].tagName == "BUTTON") {
+        } else if (this.form_or_button[0].tagName.toLowerCase() == "button") {
             instance.form_or_button.click(function (evt) {
                 instance.validate(evt);
             });
@@ -36,10 +36,14 @@ var ValidatorJS = (function () {
         this.validations = {};
 
         this.addValidationForField = function (targetField, validationObject) {
+            //para no tener que obligar de ponerle un id a todos los campos de un formulario 
+            //podria usar como target el mismo jquery object y despuas hacer un mecanismo de equals
+            //para poder obtener un campo especifico
             var target = targetField.get(0).id;
             var countFields = 0;
             var foundField = false;
-            for (field in instance.validations) {
+            for (var field in instance.validations) {
+                //aqui deberia ir el mecanismo de equals
                 if (field === target) {
                     foundField = true;
                     //verifico que no tenga ese tipo de validacion ya cargado...
@@ -58,12 +62,13 @@ var ValidatorJS = (function () {
             }
             if (countFields === 0 || !foundField) {
                 //console.log("Agrego validacion de tipo "+validationObject.validationType+" para "+target);
+                //creo el array con la primera validacion para ese campo
                 instance.validations[target] = [validationObject];
             }
         };
         this.getValidation = function (targetField, validationType) {
             var target = targetField.get(0).id;
-            for (field in instance.validations) {
+            for (var field in instance.validations) {
                 if (field === target) {
                     for (var i = 0; i < instance.validations[target].length; i++) {
                         if (instance.validations[target][i].validationType === validationType) {
@@ -79,7 +84,7 @@ var ValidatorJS = (function () {
         };
         this.removeValidationForField = function (targetField, validationType) {
             var target = targetField.get(0).id;
-            for (field in instance.validations) {
+            for (var field in instance.validations) {
                 if (field === target) {
                     for (var i = 0; i < instance.validations[target].length; i++) {
                         if (instance.validations[target][i].validationType === validationType) {
@@ -136,13 +141,12 @@ var ValidatorJS = (function () {
                     break;
                     //la ultima validacion individual enmascara los resultados de las validaciones anteriores
                 case(Validator.prototype.VALIDATE_ON_BLUR):
-                    for (field in instance.validations) {
+                    for (var field in instance.validations) {
                         if (field === validationObject.field.get(0).id) {
                             var fieldType = getType(validationObject.field);
                             if (fieldType === "div") {
                                 //el evento onblur no se dispara en los divs... por eso busco sus inputs hijos
                                 //esto se usaria por ejempo si quiero validar un grupo de checkboxs
-                                //objetoValidacion.campo.find("input").change(function(evt){
                                 validationObject.field.find("input").blur(function (evt) {
                                     validationFunction(evt, validationObject.field.get(0).id);
                                 });
@@ -158,10 +162,7 @@ var ValidatorJS = (function () {
                     for (field in instance.validations) {
                         if (field === validationObject.field.get(0).id) {
                             var fieldType = getType(validationObject.field);
-                            if (fieldType === "text" ||
-                                    fieldType === "password" ||
-                                    fieldType === "number" ||
-                                    fieldType === "email") {
+                            if (checkAttributeMatches(fieldType, ["text", "password", "number", "email"])) {
                                 validationObject.field.keyup(function (evt) {
                                     validationFunction(evt, validationObject.field.get(0).id);
                                 });
@@ -370,10 +371,10 @@ var ValidatorJS = (function () {
                         //debemos setearle como que lo represente el sigueinte 
                         //invalidRequiredValue, el mismo será tratado como cadena.
                         if (instance.parameters !== undefined && instance.parameters.invalidRequiredValue !== undefined) {
-                            return (value === instance.parameters.invalidRequiredValue);
+                            return !(value === instance.parameters.invalidRequiredValue);
                         }
                         //para un uso más genérico permito que agrega una función 
-                        //que recibe como parámetro el valor actua seleccionado en 
+                        //que recibe como parámetro el valor seleccionado en 
                         //el select y retorna true si es válido y false en caso contrario
                         if (instance.parameters !== undefined && instance.parameters.checkRequiredMethod !== undefined) {
                             return instance.parameters.checkRequiredMethod(value);
@@ -402,6 +403,10 @@ var ValidatorJS = (function () {
                         return false;
                     }
                     var length = instance.field.val().trim().length;
+                    //esto no deberia hacerse aqui, porque si necesito validar 
+                    //que sea entero y tambine requerido debo agregar ambas 
+                    //validaciones, y si en la validacion de int tambien hago 
+                    //la de requerido entonces la de requerido se lanzaria dos veces.
                     if (instance.parameters !== undefined) {
                         var required = instance.parameters.required;
                         if (required !== undefined && required && length === 0)
@@ -411,15 +416,23 @@ var ValidatorJS = (function () {
                         return true;
                     var isInt = /^-?\d+?$/.test(value);
                     if (isInt) {
+                        var int = parseInt(value);
+                        if (isNaN(int)) {
+                            //no pudo parsear correctamente
+                            return false;
+                        }
                         if (instance.parameters === undefined) {
                             return true;
                         }
                         var min = instance.parameters.min;
                         var max = instance.parameters.max;
+                        //esta comprobacion de != undefined provoca que necesariamente 
+                        //si quiero comprobar un rango debo setear ambos parametros, 
+                        //y no me deja por ejemplo soo setear el min o solo el max. 
+                        //Deberia cambiarse...
                         if (min === undefined || max === undefined) {
                             return true;
                         } else {
-                            var int = parseInt(value);
                             if (min !== undefined) {
                                 if (int < min) {
                                     return false;
@@ -439,16 +452,22 @@ var ValidatorJS = (function () {
                         return false;
                     }
                     var length = instance.field.val().trim().length;
+                    //en algun lugar deberia permitir moficiar si el punto o la 
+                    //coma es el separador de decimales
                     if (length > 0) {
                         return /^-?\d+(\.\d+)?$/.test(value);
                     }
+                    //faltan validaciones de min y max
                     return true;
                     break;
                 case(Validation.prototype.VALIDATION_TYPE_LENGTH):
-                    //si solo seteo una longitud maxima y no una minima, el campo puede ser vacio y esto lo toma como valido...
-                    //a no ser que tambien le agregue que sea campo requerido
+                    //si solo seteo una longitud maxima y no una minima, el campo 
+                    //puede ser vacio y esto lo toma como valido...
+                    //a no ser que tambien le agregue que sea campo requerido, eso 
+                    //es lo correcto
                     var valueLength = value.length;
                     if (instance.parameters === undefined) {
+                        //necesariamente debe tener seteado un max o min
                         return false;
                     }
                     var min = instance.parameters.min;
@@ -475,8 +494,12 @@ var ValidatorJS = (function () {
                     if (instance.parameters === undefined) {
                         return false;
                     }
-                    //no funcionaria con un decimal, rever
+                    //no funcionaria con un decimal, revisar
                     var numberValue = parseFloat(value);
+                    if (isNaN(numberValue)) {
+                        //no pudo parsear correctamente
+                        return false;
+                    }
                     var min = instance.parameters.min;
                     var max = instance.parameters.max;
                     if (min === undefined && max === undefined) {
@@ -502,9 +525,13 @@ var ValidatorJS = (function () {
                     return true;
                     break;
                 case(Validation.prototype.VALIDATION_TYPE_RADIO_GROUP):
+                    //revisar
                     var selected = false;
                     if (instance.parameters !== undefined && instance.parameters.group !== undefined) {
                         var groupName = instance.parameters.group;
+                        //deberia pasar como parametro desde que formulario o div 
+                        //dentro del formulario buscar, para evitar complicaciones 
+                        //en caso de que haya dos grupos de radios con los mismos names
                         $("input[type='radio'][name='" + groupName + "']").each(function () {
                             if ($(this).is(":checked")) {
                                 selected = true;
@@ -523,6 +550,7 @@ var ValidatorJS = (function () {
                     return true;
                     break;
                 case(Validation.prototype.VALIDATION_TYPE_GROUP):
+                    //sirve para checkboxes o radios
                     if (instance.parameters === undefined) {
                         return false;
                     }
@@ -535,6 +563,7 @@ var ValidatorJS = (function () {
                     var groupType = instance.parameters.type;
                     var groupName = instance.parameters.group;
                     var countSelecteds = 0;
+                    //tambien hace falta pasar como parametro de donde buscar
                     $("input[type='" + groupType + "'][name='" + groupName + "']").each(function () {
                         if ($(this).is(":checked")) {
                             countSelecteds++;
@@ -543,6 +572,7 @@ var ValidatorJS = (function () {
                     var min = instance.parameters.min;
                     var max = instance.parameters.max;
                     if (min === undefined && max === undefined) {
+                        //como minimo valida que este al menos uno seleccionado
                         return countSelecteds >= 1;
                     }
                     if (min !== undefined) {
@@ -573,7 +603,8 @@ var ValidatorJS = (function () {
                             }
                         });
                     }
-                    //solo si es requerido, el comportamiento por defeto es ahora no validar a no ser que sea campo requerido
+                    //solo si es requerido, el comportamiento por defeto es ahora 
+                    //no validar a no ser que sea campo requerido
                     if (instance.validator.hasValidation(instance.field, Validation.prototype.VALIDATION_TYPE_REQUIRED)) {
                         if (instance.parameters === undefined) {
                             return countSelecteds >= 1;
