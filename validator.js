@@ -13,11 +13,16 @@ var ValidatorJS = (function () {
     Validator.prototype.VALIDATE_ON_CHANGE = 2;
 
     // Clase asociada a un formulario
-    function Validator(agrs) {
+    function Validator(args) {
         var instance = this;
-        this.form_or_button = agrs.form_or_button;
-        this.message = agrs.message;
-        this.validationEvent = agrs.validationEvent;
+        this.form_or_button = args.form_or_button;
+        this.message = args.message;
+        this.validationEvent = args.validationEvent;
+        //estos dos eventos son solo para la validacion de todo el formulario, en el futuro 
+        //podriamos agregarlas a las validaciones de los campos individaules tambien
+        this.before = args.before;
+        this.after = args.after;
+        //podrias crear una function onError que capturaria todas las excepciones...
 
         if (this.form_or_button[0].tagName.toLowerCase() == "form") {
             instance.form_or_button.submit(function (evt) {
@@ -177,16 +182,28 @@ var ValidatorJS = (function () {
             }
         };
         //resultado de las validaciones individuales
-        this.validValidation = agrs.validValidation;
-        this.invalidValidation = agrs.invalidValidation;
+        this.validValidation = args.validValidation;
+        this.invalidValidation = args.invalidValidation;
         //resutado de las validaciones conjuntas en un campo
-        this.validField = agrs.validField;
-        this.invalidField = agrs.invalidField;
-        //resultado de todas las validaicones de todos los campos en el formulario
-        this.validForm = agrs.validForm;
-        this.invalidForm = agrs.invalidForm;
+        this.validField = args.validField;
+        this.invalidField = args.invalidField;
+        //resultado de todas las validaciones de todos los campos en el formulario
+        this.validForm = args.validForm;
+        this.invalidForm = args.invalidForm;
         this.validate = function (evt) {
             var validForm = true;
+            if (instance.before !== undefined) {
+                //le paso solo los campos, no sus validaciones
+                var fields = [];//only ids
+                for (var fieldId in instance.validations) {
+                    fields.push(fieldId);
+                }
+                instance.before({
+                    event: evt,
+                    validationEvent: instance.validationEvent,
+                    fields: fields
+                });
+            }
             for (var field in instance.validations) {
                 //la propiedad campo es el id del campo en si
                 var validationsForField = instance.validations[field];
@@ -230,6 +247,11 @@ var ValidatorJS = (function () {
                 validator: instance,
                 form: instance.form_or_button
             }, validForm);
+            if (instance.after !== undefined) {
+                instance.after({
+                    event: evt
+                });
+            }
             return validForm;
         };
         //llamar funciones predefinias de validacion
@@ -756,7 +778,9 @@ var ValidatorJS = (function () {
                     validField: parameters.validField,
                     invalidField: parameters.invalidField,
                     validForm: parameters.validForm,
-                    invalidForm: parameters.invalidForm
+                    invalidForm: parameters.invalidForm,
+                    before: parameters.before,
+                    after: parameters.after
                 })
                 );
         myself.validators.push(newValidatorInstance);
