@@ -1,123 +1,601 @@
+<!DOCTYPE html>
 <html>
-	<head>
-		<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
-		<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"/>
-	</head>
-	<body>
-		<div class="container" style="padding-top:10px;">
-			<div class="row">
-				<div class="col-sm-12">
-					<h2>
-						ValidatorJS Docs
-					</h2>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-12">
-					<div class="panel panel-default">
-						<div class="panel-heading">
-								createValidator($form, validationTrigger, options)
-						</div>
-						<div class="panel-body">
-							<h5>Parm�metros</h5>
-							<ul class="parameters">
-								<li>
-									$form: objeto jquery que representa el formulario.
-								</li>
-								<li>
-									validationTrigger: puede ser:
-									<ul>
-										<li>VALIDATE_ON_SUBMIT: las valdaciones se disparan al enviar el formuario.</li>
-										<li>VALIDATE_ON_BLUR: las valdaciones se disparan al abandonar cada campo del formulario.</li>
-										<li>VALIDATE_ON_CHANGE: las valdaciones se disparan al cambiar cada campo del formulario.</li>
-									</ul>
-								</li>
-								<li>options: JSON con propiedades:
-									<ul>
-										<li>validValidation: funci�n callback al comprobar una validaci�n v�lida en un campo.</li>
-										<li>invalidValidation: funci�n callback al comprobar una validaci�n inv�lida en un campo.</li>
-										<li>validField: funci�n callback al comprobar que todas las validaciones en un campo son v�lidas.</li>
-										<li>invalidField: funci�n callback al comprobar que al menos una de las validaciones en un campo es inv�lida.</li>
-										<li>validForm: functi�n callback al comprobar que todo el formulario es v�lido.</li>
-										<li>invalidForm: functi�n callback al comprobar que al menos un campo en el formulario es inv�lido.</li>
-									</ul>
-								</li>
-							</ul>
-							<hr/>
-							<h5>Funciones callback</h5>
-							<ul>
-								<li>validValidation(options:{
-								event: "Evento",
-								validation: "Objeto validation",
-								field: "$Campo",
-								message: "Mensaje de validaci�n"
-							})	</li>
-								<li>invalidValidation(options:{
-								event: "Evento",
-								validation: "Objeto validation",
-								field: "$Campo",
-								message: "Mensaje de validaci�n"
-							})</li>
-								<li>validField({
-								event: "Evento",
-								field: "$Campo",
-								messages: "Array de mensajes"
-							})</li>
-								<li>invalidField({
-								event: "Evento",
-								field: "$Campo",
-								messages: "Array de mensajes"
-							})</li>
-								<li>validForm({
-								event: "Evento",
-								validator: "Objeto validator",
-								form: "$Formulario"
-							})</li>
-								<li>invalidForm({
-								event: "Evento",
-								validator: "Objeto validator",
-								form: "$Formulario"
-							})</li>
-							</ul>
-						</div>
-					</div>
-					<div class="panel panel-default">
-						<div class="panel-heading">
-								addValidation(field, validationType, optionalParameters)
-						</div>
-						<div class="panel-body">
-						</div>
-					</div>
-					<div class="panel panel-default">
-						<div class="panel-heading">
-								removeValidation(field, validationType)
-						</div>
-						<div class="panel-body">
-						</div>
-					</div>
-					<div class="panel panel-default">
-						<div class="panel-heading">
-								addCustomValidation(id, method)
-						</div>
-						<div class="panel-body">
-						</div>
-					</div>
-					<div class="panel panel-default">
-						<div class="panel-heading">
-								getCustomValidation(id)
-						</div>
-						<div class="panel-body">
-						</div>
-					</div>
-					<div class="panel panel-default">
-						<div class="panel-heading">
-								removeCustomValidation(id)
-						</div>
-						<div class="panel-body">
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</body>
+    <head>
+        <meta charset="utf-8">
+        <title>ValidatorJS Docs</title>
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"/>
+        <style>
+            *{
+                font-family: "Open sans", "Arial", Sans-serif;
+            }
+            .tablaResumida > * > tr > *:nth-child(3){
+                display: none;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container" style="padding-top:10px;">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h2>
+                        Documentación ValidatorJS 1.1
+                    </h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Método <strong>createValidator( options: Json object ): Validator Object</strong>
+                        </div>
+                        <div class="panel-body">
+                            <p>
+                                Crea una instancia del validator asociada a un formulario (o elemento contenedor de campos a ser validados).
+                            </p>
+                            <p>
+                                Parámetros:
+                            </p>
+                            <ul>
+                                <li>
+                                <u>options:</u> Objeto JSON con las opciones para crear el validador.
+                                </li>
+                            </ul>
+                            <div class="parameters">
+                                <table class="table table-striped table-bordered tablaResumida">
+                                    <thead>
+                                        <tr>
+                                            <th>Nombre</th>
+                                            <th>Tipo</th>
+                                            <th>Defecto</th>
+                                            <th>Descripción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>form</td>
+                                            <td>jQuery object</td>
+                                            <td>Obligatorio (sólo si no especificó un button)</td>
+                                            <td>
+                                                <p>
+                                                    Objeto jQuery que representa el formulario sobre el cual se realizarán las validaciones.
+                                                </p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>button</td>
+                                            <td>jQuery object</td>
+                                            <td>Obligatorio (sólo si no especificó un form)</td>
+                                            <td>
+                                                <p>
+                                                    Objeto jQuery que representa un botón que dispará las validaciones. Por ejemplo: se usaría en lugar de un form utilizo un div y en el mismo agrego un button que cause las validaciones, quizás para hacer una consulta AJAX si los campos son válidos.
+                                                </p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>triggers</td>
+                                            <td>int[]</td>
+                                            <td>[]</td>
+                                            <td>
+                                                <p>
+                                                    Representa los eventos que dispararán la validación. Por defecto se puede aplicar de la siguiente forma:
+                                                </p>
+                                                <ul>
+                                                    <li>
+                                                    <u>Validar un formulario estándar:</u> Sólo es necesario pasar como "form" el objeto jQuery que represente el formulario. Internamente se setea el evento VALIDATE_ON_FORM_SUBMIT.
+                                                    </li>
+                                                    <li>
+                                                    <u>Validar campos usando un botón:</u> Es necesario pasar como "button" el objeto jQuery que represente el botón que dispará las validaciones. Internamente se setea el evento VALIDATE_ON_BUTTON_CLICK.
+                                                    </li>
+                                                </ul>
+                                                <p>
+                                                    Los disparadores de validación se listan a continuación:
+                                                </p>
+                                                <ul>
+                                                    <li>
+                                                    <u>VALIDATE_ON_FORM_SUBMIT:</u>
+                                                    El disparador es el evento submit (envío) del formulario dado por la opción "form". 
+                                                    Cuando se envía el formulario y éste es inválido, automáticamente se evita el envío del mismo.
+                                                    Para usar este disparador es obligatorio que esté presente la opción "form".
+                                                    </li>
+                                                    <li>
+                                                    <u>VALIDATE_ON_BUTTON_CLICK:</u>
+                                                    El disparador es el evento click del botón dado por la opción "button". Para usar este disparador es obligatorio que esté presente la opción "button".
+                                                    </li>
+                                                    <li>
+                                                    <u>VALIDATE_ON_FIELD_BLUR:</u>
+                                                    El disparador es el evento "blur" (pérdida de foco) de los controles y campos del formulario.
+                                                    </li>
+                                                    <li>
+                                                    <u>VALIDATE_ON_FIELD_CHANGE:</u>
+                                                    El disparador es el evento "change" (cambio de valor) de los controles y campos del formulario. Para los controles de tipo texto se dispara ante el evento "keyup" (cuando se suelta una tecla).
+                                                    </li>
+                                                    <li>
+                                                    <u>VALIDATE_ON_CUSTOM_EVENT:</u>
+                                                    <p>
+                                                        El disparador se da como una función genérica dada en la opción "validationCustomEvent" (obligatoria). La función posee la siguiente signatura:
+                                                    </p>
+                                                    <p>
+                                                        function validationCustomEvent(validateFunction) : void
+                                                    </p>
+                                                    <p>
+                                                        Donde validateFunction es la función que se debe se llamada dentro del evento personalizado como disparador de las validaciones, el mismo retrona "true" si las validaciones fueron correctas y "false" en caso de formulario inválido.
+                                                    </p>
+                                                    <p>
+                                                        Para usar este disparador es obligatorio que esté presente la opción "validationCustomEvent".
+                                                    </p>
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>validationCustomEvent</td>
+                                            <td>function</td>
+                                            <td>undefined</td>
+                                            <td>
+                                                <p>
+                                                    Función que establece el evento disparador de las validaciones. Este evente puede ser cualquiera especificado por el usuario. Signatura:
+                                                </p>
+                                                <p>
+                                                    function validationCustomEvent(validateFunction) : void
+                                                </p>
+                                                <p>
+                                                    Donde los parámetros son:
+                                                </p>
+                                                <ul>
+                                                    <li>
+                                                    <u>validateFunction:</u> Función que ejecuta las validaciones del formulario, retona si "true" si el formulario es válido o "false" si es inválido. Su signatura:
+                                                    <p>
+                                                        function validate(evt: Event Object): boolean
+                                                    </p>
+                                                    <p>
+                                                        Donde los parámetros son:
+                                                    </p>
+                                                    <ul>
+                                                        <li>
+                                                        <u>evt:</u> Objeto Event que disparó las validaciones
+                                                        </li>
+                                                    </ul>
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>message</td>
+                                            <td>string</td>
+                                            <td>undefined</td>
+                                            <td>Es el mensaje de error que se devuelve cuando el formulario es inválido.</td>
+                                        </tr>
+                                        <tr>
+                                            <td>validValidation</td>
+                                            <td>function</td>
+                                            <td>undefined</td>
+                                            <td>
+                                                <p>
+                                                    Función a ejecutarse cuando se verifica una validación de un campo del formulario como válida. Signatura:
+                                                </p>
+                                                <p>
+                                                    function validValidation(options: { event: Event Object, validation: Validation Object, field: jQuery object }): void
+                                                </p>
+                                                <p>
+                                                    Donde los parámetros son:
+                                                </p>
+                                                <ul>
+                                                    <li>
+                                                    <u>event:</u> Objeto Event que disparó las validaciones.
+                                                    </li>
+                                                    <li>
+                                                    <u>validation:</u> Objeto Validation que contiene toda la información de la validación ejecutada sobre el campo.
+                                                    </li>
+                                                    <li>
+                                                    <u>field:</u> Objeto jQuery que representa el campo sobre el cual la validación se verificó como válida.
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>invalidValidation</td>
+                                            <td>function</td>
+                                            <td>undefined</td>
+                                            <td>
+                                                <p>
+                                                    Función a ejecutarse cuando se verifica una validación de un campo del formulario como inválida. Signatura:
+                                                </p>
+                                                <p>
+                                                    function invalidValidation(options: { event: Event Object, validation: Validation Object, field: jQuery object, message: string }): void
+                                                </p>
+                                                <p>
+                                                    Donde los parámetros son:
+                                                </p>
+                                                <ul>
+                                                    <li>
+                                                    <u>event:</u> Objeto Event que disparó las validaciones.
+                                                    </li>
+                                                    <li>
+                                                    <u>validation:</u> Objeto Validation que contiene toda la información de la validación ejecutada sobre el campo.
+                                                    </li>
+                                                    <li>
+                                                    <u>field:</u> Objeto jQuery que representa el campo sobre el cual la validación se verificó como inválida.
+                                                    </li>
+                                                    <li>
+                                                    <u>message:</u> Mensaje a mostrar informando la validación inválida.
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>validField</td>
+                                            <td>function</td>
+                                            <td>undefined</td>
+                                            <td>
+                                                <p>
+                                                    Función a ejecutarse cuando se verifica que todas las validaciones de un campo del formulario son válidas, por lo tanto el campo es válido. Signatura:
+                                                </p>
+                                                <p>
+                                                    function validField(options: { event: Event Object, field: jQuery object }): void
+                                                </p>
+                                                <p>
+                                                    Donde los parámetros son:
+                                                </p>
+                                                <ul>
+                                                    <li>
+                                                    <u>event:</u> Objeto Event que disparó las validaciones.
+                                                    </li>
+                                                    <li>
+                                                    <u>field:</u> Objeto jQuery que representa el campo sobre el cual las validaciones se verificaron como válidas.
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>invalidField</td>
+                                            <td>function</td>
+                                            <td>undefined</td>
+                                            <td>
+                                                <p>
+                                                    Función a ejecutarse cuando se verifica que al menos unas de las validaciones de un campo del formulario es inválido, por lo tanto el campo es inválido. Signatura:
+                                                </p>
+                                                <p>
+                                                    function validField(options: { event: Event Object, field: jQuery object, messages: string[] }): void
+                                                </p>
+                                                <p>
+                                                    Donde los parámetros son:
+                                                </p>
+                                                <ul>
+                                                    <li>
+                                                    <u>event:</u> Objeto Event que disparó las validaciones.
+                                                    </li>
+                                                    <li>
+                                                    <u>field:</u> Objeto jQuery que representa el campo inválido.
+                                                    </li>
+                                                    <li>
+                                                    <u>messages</u> Arreglo de mensajes de todas aquellas validaciones que se verificaron como inválidas para el campo.
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>validForm</td>
+                                            <td>function</td>
+                                            <td>undefined</td>
+                                            <td>
+                                                <p>
+                                                    Función a ejecutarse cuando se verifica que el formulario es válido, cuando todas las validaciones de todos sos campos son verificadas como válidas. Signatura:
+                                                </p>
+                                                <p>
+                                                    function validField(options: { event: Event Object, validator: Validator object, form: jQuery object }): void
+                                                </p>
+                                                <p>
+                                                    Donde los parámetros son:
+                                                </p>
+                                                <ul>
+                                                    <li>
+                                                    <u>event:</u> Objeto Event que disparó las validaciones.
+                                                    </li>
+                                                    <li>
+                                                    <u>validator:</u> Objeto Validator que valida el formulario.
+                                                    </li>
+                                                    <li>
+                                                    <u>form:</u> Objeto jQuery que representa el formulario.
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>invalidForm</td>
+                                            <td>function</td>
+                                            <td>undefined</td>
+                                            <td>
+                                                <p>
+                                                    Función a ejecutarse cuando se verifica que el formulario es inválido, el mismo es inválido cuando al menos una validación en uno de sus campos ser verifica como inválida. Signatura:
+                                                </p>
+                                                <p>
+                                                    function validField(options: { event: Event Object, validator: Validator object, trigger: int[, form: jQuery object, button: jQuery objecy] }): void
+                                                </p>
+                                                <p>
+                                                    Donde los parámetros son:
+                                                </p>
+                                                <ul>
+                                                    <li>
+                                                    <u>event:</u> Objeto Event que disparó las validaciones.
+                                                    </li>
+                                                    <li>
+                                                    <u>validator:</u> Objeto Validator que valida el formulario.
+                                                    </li>
+                                                    <li>
+                                                    <u>trigger:</u> Número entero que representa el evento disparador de validaciones (VALIDATE_ON_FORM_SUBMIT, VALIDATE_ON_BUTTON_CLICK, VALIDATE_ON_FIELD_BLUR, VALIDATE_ON_FIELD_CHANGE o VALIDATE_ON_CUSTOM_EVENT).
+                                                    </li>
+                                                    <li>
+                                                    <u>form (opcional):</u> Objeto jQuery que representa el formulario cuando el trigger (disparador de validaciones) es del tipo VALIDATE_ON_FORM_SUBMIT.
+                                                    </li>
+                                                    <li>
+                                                    <u>button (opcional):</u> Objeto jQuery que representa el botón que dispara las validaciones cuando el trigger (disparador de validaciones) es del tipo VALIDATE_ON_BUTTON_CLICK.
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>before</td>
+                                            <td>function</td>
+                                            <td>undefined</td>
+                                            <td>
+                                                <p>
+                                                    Función a ejecutarse antes de realizar las validaciones del formulario. Signatura:
+                                                </p>
+                                                <p>
+                                                    function before({ event: Event Object, fields: string[], trigger: int }): void
+                                                </p>
+                                                <p>
+                                                    Donde los parámetros son:
+                                                </p>
+                                                <ul>
+                                                    <li>
+                                                    <u>event:</u> Objeto Event que disparó las validaciones.
+                                                    </li>
+                                                    <li>
+                                                    <u>fields:</u> Arreglo de los ids de los campos que conforman el formulario.
+                                                    </li>
+                                                    <li>
+                                                    <u>trigger:</u> Trigger (id de disparador de evento) que disparó las validaciones. Puede ser null (por ejemplo si se usó como trigger un VALIDATE_ON_CUSTOM_EVENT).
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>after</td>
+                                            <td>function</td>
+                                            <td>undefined</td>
+                                            <td>
+                                                <p>
+                                                    Función a ejecutarse después de realizar las validaciones del formulario. Signatura:
+                                                </p>
+                                                <p>
+                                                    function before({ event: Event Object, valid: boolean, trigger: int }): void
+                                                </p>
+                                                <p>
+                                                    Donde los parámetros son:
+                                                </p>
+                                                <ul>
+                                                    <li>
+                                                    <u>event:</u> Objeto Event que disparó las validaciones.
+                                                    </li>
+                                                    <li>
+                                                    <u>valid:</u> Resultado de las validaciones: vale "true" cuando el formulario completo es válido, "false" caundo al menos una validación es inválida.
+                                                    </li>
+                                                    <li>
+                                                    <u>trigger:</u> Trigger (id de disparador de evento) que disparó las validaciones. Puede ser null (por ejemplo si se usó como trigger un VALIDATE_ON_CUSTOM_EVENT).
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Método <strong>validator.addValidation( field: jQuery object, validationType: int, options: Json object )</strong>
+                        </div>
+                        <div class="panel-body">
+                            <p>
+                                Agrega una validación específica para un campo del validator.
+                            </p>
+                            <p>
+                                Parámetros:
+                            </p>
+                            <ul>
+                                <li>
+                                <u>field:</u> Objeto jQuery que representa el campo al cual se va a agregar el nuevo tipo de validación. El objeto jQuery debe ser un selector por id únicamente.
+                                </li>
+                                <li>
+                                <u>validationType:</u> Número entero que representa el tipo de validación.
+                                </li>
+                                <li>
+                                <u>options:</u> Objeto JSON con las opciones para agregar la validación.
+                                </li>
+                            </ul>
+                            <div class="parameters">
+                                <table class="table table-striped table-bordered tablaResumida">
+                                    <thead>
+                                        <tr>
+                                            <th>Nombre</th>
+                                            <th>Tipo</th>
+                                            <th>Defecto</th>
+                                            <th>Descripción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>field</td>
+                                            <td>jQuery object</td>
+                                            <td>Obligatorio</td>
+                                            <td>
+                                                <p>
+                                                    Objeto jQuery que representa el campo al cual se va a agregar el nuevo tipo de validación. El objeto jQuery debe ser un selector por id únicamente.
+                                                </p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>validationType</td>
+                                            <td>int</td>
+                                            <td>Obligatorio</td>
+                                            <td>
+                                                <p>
+                                                    Número entero que representa el tipo de validacón que se aplica al campo:
+                                                </p>
+                                                <ul>
+                                                    <li>
+                                                    <u>VALIDATION_TYPE_REQUIRED:</u>
+                                                    Valida que se haya ingresado o seleccionado un valor en el campo.
+                                                    </li>
+                                                    <li>
+                                                    <u>VALIDATION_TYPE_LENGTH:</u>
+                                                    Valida que el campo de texto posea la cantidad de caracteres impuesta como límite.
+                                                    </li>
+                                                    <li>
+                                                    <u>VALIDATION_TYPE_NUMBER:</u>
+                                                    Valida que el campo posea un valor de tipo numérico. Puede ser entero o decimal, posito o negativo, en caso de ser decimal sólo puede usarse el punto como separador.
+                                                    </li>
+                                                    <li>
+                                                    <u>VALIDATION_TYPE_INT:</u>
+                                                    Valida que el campo posea un valor numérico entero (positivo o negativo).
+                                                    </li>
+                                                    <li>
+                                                    <u>VALIDATION_TYPE_DECIMAL:</u>
+                                                    Valida que el campo posea un valor numérico decimal (positivo o negativo). El caracter para separar los decimales es el punto.
+                                                    </li>
+                                                    <li>
+                                                    <u>VALIDATION_TYPE_VALUE:</u>
+                                                    Valida que el valor del campo sea un número comprendido en los límites dados.
+                                                    </li>
+                                                    <li>
+                                                    <u>VALIDATION_TYPE_EMAIL:</u>
+                                                    Valida que el campo posea una dirección de email válida.
+                                                    </li>
+                                                    <li>
+                                                    <u>VALIDATION_TYPE_GROUP:</u>
+                                                    Valida que el grupo de elementos (sean checkboxes o radiobuttons) que posean al mismo grupo estén seleccionados con una cantidad que esté dentro de los límites dados.
+                                                    </li>
+                                                    <li>
+                                                    <u>VALIDATION_TYPE_RADIO_GROUP:</u>
+                                                    Valida que el grupo de radiobuttons tenga un elemento seleccionado al menos.
+                                                    </li>
+                                                    <li>
+                                                    <u>VALIDATION_TYPE_CHECKBOX_GROUP:</u>
+                                                    Valida que el grupo de checkboxes posea la cantidad de elementos seleccionados con una cantidad que esté dentro de los límites dados.
+                                                    </li>
+                                                    <li>
+                                                    <u>VALIDATION_TYPE_CUSTOM:</u>
+                                                    Aplica una validación personalizada al campo usando una función cuyo parámetro es el valor del campo y retorna "true" si es válido y "false" en caso contrario.
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>options</td>
+                                            <td>JSON</td>
+                                            <td>undefined</td>
+                                            <td>
+                                                <p>
+                                                    Existen parámetros independientes del tipo de validación (validationType):
+                                                </p>
+                                                <ul>
+                                                    <li>
+                                                    <u>message:</u>
+                                                    Es el mensaje que se mostrará en caso de verificar la validación como inválida.
+                                                    </li>
+                                                    <li>
+                                                    <u>requierd:</u>
+                                                    Especifica que el campo es obligatorio (no debe ser vacío), este parámetro depende del tipo de validación.
+                                                    </li>
+                                                </ul>
+                                                <p>
+                                                    También existen parámetros que son necesarios (algunos opcionales) para el funcionamiento de algunos tipos de validación:
+                                                </p>
+                                                <ul>
+                                                    <li>
+                                                    <u>VALIDATION_TYPE_REQUIRED:</u>
+                                                    Valida que se haya ingresado o seleccionado un valor en el campo.
+                                                    </li>
+                                                    <li>
+                                                    <u>VALIDATION_TYPE_LENGTH:</u>
+                                                    Valida que el campo de texto posea la cantidad de caracteres impuesta como límite.
+                                                    </li>
+                                                    <li>
+                                                    <u>VALIDATION_TYPE_NUMBER:</u>
+                                                    Valida que el campo posea un valor de tipo numérico. Puede ser entero o decimal, posito o negativo, en caso de ser decimal sólo puede usarse el punto como separador.
+                                                    </li>
+                                                    <li>
+                                                    <u>VALIDATION_TYPE_INT:</u>
+                                                    Valida que el campo posea un valor numérico entero (positivo o negativo).
+                                                    </li>
+                                                    <li>
+                                                    <u>VALIDATION_TYPE_DECIMAL:</u>
+                                                    Valida que el campo posea un valor numérico decimal (positivo o negativo). El caracter para separar los decimales es el punto.
+                                                    </li>
+                                                    <li>
+                                                    <u>VALIDATION_TYPE_VALUE:</u>
+                                                    Valida que el valor del campo sea un número comprendido en los límites dados.
+                                                    </li>
+                                                    <li>
+                                                    <u>VALIDATION_TYPE_EMAIL:</u>
+                                                    Valida que el campo posea una dirección de email válida.
+                                                    </li>
+                                                    <li>
+                                                    <u>VALIDATION_TYPE_GROUP:</u>
+                                                    Valida que el grupo de elementos (sean checkboxes o radiobuttons) que posean al mismo grupo estén seleccionados con una cantidad que esté dentro de los límites dados.
+                                                    </li>
+                                                    <li>
+                                                    <u>VALIDATION_TYPE_RADIO_GROUP:</u>
+                                                    Valida que el grupo de radiobuttons tenga un elemento seleccionado al menos.
+                                                    </li>
+                                                    <li>
+                                                    <u>VALIDATION_TYPE_CHECKBOX_GROUP:</u>
+                                                    Valida que el grupo de checkboxes posea la cantidad de elementos seleccionados con una cantidad que esté dentro de los límites dados.
+                                                    </li>
+                                                    <li>
+                                                    <u>VALIDATION_TYPE_CUSTOM:</u>
+                                                    Aplica una validación personalizada al campo usando una función cuyo parámetro es el valor del campo y retorna "true" si es válido y "false" en caso contrario.
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            removeValidation(field, validationType)
+                        </div>
+                        <div class="panel-body">
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            addCustomValidation(id, method)
+                        </div>
+                        <div class="panel-body">
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            getCustomValidation(id)
+                        </div>
+                        <div class="panel-body">
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            removeCustomValidation(id)
+                        </div>
+                        <div class="panel-body">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
 </html>

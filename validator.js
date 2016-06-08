@@ -3,19 +3,16 @@ var ValidatorJS = (function () {
 
     ///////////////////// Funciones privadas
 
-    // Valida al submittear el formulario: evento submit
+    // Valida se hace submit en el formulario indicado como trigger (form)
     Validator.prototype.VALIDATE_ON_FORM_SUBMIT = 0;
-
+    // Valida cuando se hace click en el boton indicado como trigger (button)
+    Validator.prototype.VALIDATE_ON_BUTTON_CLICK = 1;
     // Valida al hacer blur del campo: evento blur
-    Validator.prototype.VALIDATE_ON_BLUR = 1;
-
+    Validator.prototype.VALIDATE_ON_FIELD_BLUR = 2;
     // Valida al cambiar el texto del campo: evento change
-    Validator.prototype.VALIDATE_ON_CHANGE = 2;
-
-    //Valida cuando se ejecuta el evento indicado
-    Validator.prototype.VALIDATE_ON_CUSTOM = 3;
-
-    Validator.prototype.VALIDATE_ON_BUTTON_CLICK = 4;
+    Validator.prototype.VALIDATE_ON_FIELD_CHANGE = 3;
+    // Valida cuando se ejecuta el evento indicado
+    Validator.prototype.VALIDATE_ON_CUSTOM_EVENT = 4;
 
     // Clase asociada a un formulario
     function Validator(args) {
@@ -142,7 +139,7 @@ var ValidatorJS = (function () {
                         //la validacion se realiza al hacer submit del formulario entero
                         break;
                         //la ultima validacion individual enmascara los resultados de las validaciones anteriores
-                    case(Validator.prototype.VALIDATE_ON_BLUR):
+                    case(Validator.prototype.VALIDATE_ON_FIELD_BLUR):
                         for (var field in instance.validations) {
                             if (field === validationObject.field.get(0).id) {
                                 var fieldType = getType(validationObject.field);
@@ -160,7 +157,7 @@ var ValidatorJS = (function () {
                             }
                         }
                         break;
-                    case(Validator.prototype.VALIDATE_ON_CHANGE):
+                    case(Validator.prototype.VALIDATE_ON_FIELD_CHANGE):
                         for (field in instance.validations) {
                             if (field === validationObject.field.get(0).id) {
                                 var fieldType = getType(validationObject.field);
@@ -284,6 +281,7 @@ var ValidatorJS = (function () {
                 }
             } else {
                 if (instance.validValidation !== undefined) {
+                    delete parameters.message;
                     instance.validValidation(parameters);
                 }
             }
@@ -295,6 +293,7 @@ var ValidatorJS = (function () {
                 }
             } else {
                 if (instance.validField !== undefined) {
+                    delete parameters.messages;
                     instance.validField(parameters);
                 }
             }
@@ -302,7 +301,7 @@ var ValidatorJS = (function () {
         this.callFormFunctions = function (parameters, result) {
             if (!result) {
                 //si el formulario es invalido, DEBO impdir que se envíe... en todos los casos
-                if (parameters.event !== undefined) {
+                if (parameters.event !== undefined && parameters.event.type.toLowerCase() === "submit") {
                     parameters.event.preventDefault();
                 }
                 if (instance.invalidForm !== undefined) {
@@ -310,6 +309,7 @@ var ValidatorJS = (function () {
                 }
             } else {
                 if (instance.validForm !== undefined) {
+                    delete parameters.message;
                     instance.validForm(parameters);
                 }
             }
@@ -341,11 +341,11 @@ var ValidatorJS = (function () {
                 } else {
                     throw "No validation event callback found correct for VALIDATE_ON_BUTTON_CLICK validation type";
                 }
-            } else if (validationEvent === Validator.prototype.VALIDATE_ON_CUSTOM) {
-                if (args.validationEventMethod !== undefined && (typeof (args.validationEventMethod)).toLowerCase() === "function") {
-                    args.validationEventMethod(instance.validate);
+            } else if (validationEvent === Validator.prototype.VALIDATE_ON_CUSTOM_EVENT) {
+                if (args.validationCustomEvent !== undefined && (typeof (args.validationCustomEvent)).toLowerCase() === "function") {
+                    args.validationCustomEvent(instance.validate);
                 } else {
-                    throw "No validation event callback found correct for VALIDATE_ON_CUSTOM validation type";
+                    throw "No validation event callback found correct for VALIDATE_ON_CUSTOM_EVENT validation type";
                 }
             } else {
                 throw "No validation event trigger found. Given: " + validationEvent;
@@ -876,9 +876,9 @@ var ValidatorJS = (function () {
 
     myself.VALIDATE_ON_FORM_SUBMIT = Validator.prototype.VALIDATE_ON_FORM_SUBMIT;
     myself.VALIDATE_ON_BUTTON_CLICK = Validator.prototype.VALIDATE_ON_BUTTON_CLICK;
-    myself.VALIDATE_ON_BLUR = Validator.prototype.VALIDATE_ON_BLUR;
-    myself.VALIDATE_ON_CHANGE = Validator.prototype.VALIDATE_ON_CHANGE;
-    myself.VALIDATE_ON_CUSTOM = Validator.prototype.VALIDATE_ON_CUSTOM;
+    myself.VALIDATE_ON_FIELD_BLUR = Validator.prototype.VALIDATE_ON_FIELD_BLUR;
+    myself.VALIDATE_ON_FIELD_CHANGE = Validator.prototype.VALIDATE_ON_FIELD_CHANGE;
+    myself.VALIDATE_ON_CUSTOM_EVENT = Validator.prototype.VALIDATE_ON_CUSTOM_EVENT;
 
     // Indican el tipo de validación.
 
