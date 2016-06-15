@@ -1,147 +1,267 @@
 <html>
-	<head>
-		<script type="text/javascript" src="jquery.js"></script>
-		<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
-		<script type="text/javascript" src="../validator.js"></script>
-		<script type="text/javascript" src="validaciones.js"></script>
-		<script type="text/javascript" src="pattern_matcher.js"></script>
-		<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"/>
-	</head>
-	<body>
-		<div class="container">
-			<h3 style="text-align:center;">Formulario</h3>
-			<form class="form-horizontal" id="formulario">
-				<div class="form-group">
-					<label class="col-sm-2 control-label">Nombre</label>
-					<div class="col-sm-4 ">
-						<input type="text" class="form-control texto" id="txtNombre" placeholder="Nombre" >
-					</div>
-					<label class="col-sm-2 control-label">Apellido</label>
-					<div class="col-sm-4 ">
-						<input type="text" class="form-control texto" id="txtApellido" placeholder="Apellido" >
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-sm-2 control-label">Fecha de nacimiento</label>
-					<div class="col-sm-4 ">
-						<input type="text" class="form-control" id="txtNacimiento" placeholder="dd/mm/aaaa">
-					</div>
-					<label class="col-sm-2 control-label">Sexo</label>
-					<div class="col-sm-4" id="divSexo">
-						<label class="radio-inline">
-							<input type="radio" name="radSexo" id="optionsRadios1" value="h">
-							Hombre
-						</label>
-						<label class="radio-inline">
-							<input type="radio" name="radSexo" id="optionsRadios2" value="m">
-							Mujer
-						</label>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-sm-2 control-label">Email</label>
-					<div class="col-sm-4 ">
-						<input type="text" class="form-control" id="txtEmail" placeholder="e-mail">
-					</div>
-					<label class="col-sm-2 control-label">Teléfono</label>
-					<div class="col-sm-4 ">
-						<input type="text" class="form-control" id="txtTelefono" placeholder="Teléfono">
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-sm-2 control-label">Edad</label>
-					<div class="col-sm-4">
-						<input type="text" class="form-control" id="txtEdad" placeholder="Edad">
-					</div>
-					<label class="col-sm-2 control-label">Estatura</label>
-					<div class="col-sm-4">
-						<input type="text" class="form-control" id="txtEstatura" placeholder="Estatura">
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-sm-2 control-label">Nacionalidad</label>
-					<div class="col-sm-4">
-						<select class="form-control" id="slcNacionalidad">
-							<option value="-1">Seleccione</option>
-							<option value="0">Argentina</option>
-							<option value="1">Mexico</option>
-							<option value="2">Paraguay</option>
-							<option value="3">Uruguay</option>
-						</select>
-					</div>
-					<label class="col-sm-2 control-label">DNI</label>
-					<div class="col-sm-4 ">
-						<input type="text" class="form-control" id="txtDni" placeholder="DNI" >
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-sm-2 control-label">Domicilio</label>
-					<div class="col-sm-10">
-						<input type="text" class="form-control" id="txtDomicilio" placeholder="Domicilio" >
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-sm-2 control-label">Estudios</label>
-					<div class="col-sm-10" id="divEstudios">
-						<div class="checkbox">
-							<label>
-								<input type="checkbox" name='chkEstudios' id="chkUniversidad"> Universitarios
-							</label>
-						</div>
-						<div class="checkbox">
-							<label>
-								<input type="checkbox" name='chkEstudios'> Secundarios
-							</label>
-						</div>
-						<div class="checkbox">
-							<label>
-								<input type="checkbox" name='chkEstudios'> Primarios
-							</label>
-						</div>
-					</div>
-				</div>
-				<div class="form-group">
-					<div class="col-sm-offset-2 col-sm-10">
-						<button type="submit" class="btn btn-primary" id="btnRegistrar">Enviar</button>
-					</div>
-				</div>
-			</form>
-			<hr/>
-			<form class="form-horizontal" id="formulario2">
-				<div class="form-group">
-					<label class="col-sm-2 control-label">Nombre</label>
-					<div class="col-sm-4 ">
-						<input type="text" class="form-control texto" id="txtUsuario" placeholder="Nombre de usuario" >
-					</div>
-					<label class="col-sm-2 control-label">Password</label>
-					<div class="col-sm-4 ">
-						<input type="password" class="form-control texto" id="txtPassword" placeholder="Password" >
-					</div>
-				</div>
-				<div class="form-group">
-					<div class="col-sm-offset-2 col-sm-10">
-						<button type="submit" class="btn btn-primary" id="btnRegistrar">Enviar</button>
-					</div>
-				</div>
-			</form>
-			<hr />
-			<div class="form-horizontal">
-			    <div class="form-group">
-			        <label class="col-sm-2 control-label">Nombre</label>
-			        <div class="col-sm-4">
-					    <input type="text" class="form-control texto" id="txtNombre2" placeholder="Nombre" />
-				    </div>
-				    <label class="col-sm-2 control-label">Apellido</label>
-			        <div class="col-sm-4">
-					    <input type="text" class="form-control texto" id="txtApellido2" placeholder="Apellido" />
-				    </div>
-	            </div>
-			    <div class="form-group">
-				    <div class="col-sm-offset-2 col-sm-10">
-					    <button type="button" class="btn btn-primary" id="btnEnviar">Enviar</button>
-				    </div>
-			    </div>
-			</div>
-		</div>
-	</body>
+    <head>
+        <script type="text/javascript" src="jquery.js"></script>
+        <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="../validator.js"></script>
+        <script type="text/javascript" >
+            $(document).ready(function () {
+
+                function validacionValida(agrs) {
+                    console.log("En el campo " + agrs.field.get(0).id + " la validacion de tipo " + agrs.validation.validationType + " es VALIDA");
+                }
+                function validacionInvalida(agrs) {
+                    console.log("En el campo " + agrs.field.get(0).id + " la validacion de tipo " + agrs.validation.validationType + " es invalida");
+                }
+                function campoValido(agrs) {
+                    console.log("El campo " + agrs.field.get(0).id + " es VALIDO");
+                    if (agrs.field.get(0).tagName.toLowerCase() === "div") {
+                        agrs.field.removeClass("has-error");
+                    } else {
+                        agrs.field.parents("div").first().removeClass("has-error");
+                    }
+                }
+                function campoInvalido(agrs) {
+                    console.log("El campo " + agrs.field.get(0).id + " es invalido");
+                    if (agrs.field.get(0).tagName.toLowerCase() === "div") {
+                        agrs.field.addClass("has-error");
+                    } else {
+                        agrs.field.parents("div").first().addClass("has-error");
+                    }
+                    /*if (agrs.messages !== undefined) {
+                     for (var i = 0; i < agrs.messages.length; i++) {
+                     //parametros.campo.after('<label class="col-sm-10 mensajeError" style="font-size:14px;font-weight:normal;margin:0px;padding:4px;color:red">'+parametros.mensajes[i]+'</label>');
+                     }
+                     }*/
+                }
+                function formularioValido(agrs) {
+                    console.log("Formulario VALIDO");
+                }
+                function formularioInvalido(agrs) {
+                    console.log("Formulario invalido");
+                }
+
+                /*
+                 VALIDATE_ON_SUBMIT
+                 VALIDATE_ON_BLUR
+                 VALIDATE_ON_CHANGE
+                 */
+
+                var validator1 = ValidatorJS.createValidator($("#formulario"), ValidatorJS.VALIDATE_ON_SUBMIT,
+                        {
+                            validValidation: validacionValida,
+                            invalidValidation: validacionInvalida,
+                            validField: campoValido,
+                            invalidField: campoInvalido,
+                            validForm: formularioValido,
+                            invalidForm: formularioInvalido
+                        });
+
+                /*
+                 VALIDATION_TYPE_REQUIRED
+                 VALIDATION_TYPE_LENGTH
+                 VALIDATION_TYPE_NUMBER
+                 VALIDATION_TYPE_INT
+                 VALIDATION_TYPE_DECIMAL
+                 VALIDATION_TYPE_VALUE
+                 VALIDATION_TYPE_EMAIL
+                 VALIDATION_TYPE_GROUP
+                 VALIDATION_TYPE_RADIO_GROUP
+                 VALIDATION_TYPE_CHECKBOX_GROUP
+                 VALIDATION_TYPE_CUSTOM
+                 */
+
+                ValidatorJS.addCustomValidation("fecha", function (campo) {
+                    return /^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/.test(campo.val().trim());
+                });
+
+
+                validator1.addValidation($("#txtNombre"), ValidatorJS.VALIDATION_TYPE_REQUIRED);
+                validator1.addValidation($("#txtApellido"), ValidatorJS.VALIDATION_TYPE_REQUIRED);
+                validator1.addValidation($("#txtNacimiento"), ValidatorJS.VALIDATION_TYPE_CUSTOM, {id: "fecha"});
+                validator1.addValidation($("#divSexo"), ValidatorJS.VALIDATION_TYPE_RADIO_GROUP, {required: false, group: "radSexo"});
+                validator1.addValidation($("#txtEmail"), ValidatorJS.VALIDATION_TYPE_EMAIL);
+                validator1.addValidation($("#txtTelefono"), ValidatorJS.VALIDATION_TYPE_INT);
+                validator1.addValidation($("#txtTelefono"), ValidatorJS.VALIDATION_TYPE_LENGTH, {min: 7, max: 11});
+                validator1.addValidation($("#txtEdad"), ValidatorJS.VALIDATION_TYPE_INT);
+                validator1.addValidation($("#txtEdad"), ValidatorJS.VALIDATION_TYPE_VALUE, {min: 1});
+                validator1.addValidation($("#txtEstatura"), ValidatorJS.VALIDATION_TYPE_DECIMAL);
+                //validator1.addValidation($("#slcNacionalidad"), ValidatorJS.VALIDATION_TYPE_REQUIRED);
+                validator1.addValidation($("#txtDni"), ValidatorJS.VALIDATION_TYPE_INT);
+                validator1.addValidation($("#txtDni"), ValidatorJS.VALIDATION_TYPE_LENGTH, {min: 8, max: 8});
+                validator1.addValidation($("#txtDomicilio"), ValidatorJS.VALIDATION_TYPE_LENGTH, {max: 20});
+                validator1.addValidation($("#divEstudios"), ValidatorJS.VALIDATION_TYPE_CHECKBOX_GROUP, {group: "chkEstudios", min: 2});
+
+                //
+                var validator2 = ValidatorJS.createValidator($("#formulario2"), ValidatorJS.VALIDATE_ON_SUBMIT,
+                        {
+                            validValidation: validacionValida,
+                            invalidValidation: validacionInvalida,
+                            validField: campoValido,
+                            invalidField: campoInvalido,
+                            validForm: formularioValido,
+                            invalidForm: formularioInvalido
+                        });
+
+                validator2.addValidation($("#txtUsuario"), ValidatorJS.VALIDATION_TYPE_LENGTH, {required: true, max: 8});
+                validator2.addValidation($("#txtPassword"), ValidatorJS.VALIDATION_TYPE_REQUIRED);
+
+                $("form").submit(function (evt) {
+                    evt.preventDefault();
+                });
+
+                //
+                var validator3 = ValidatorJS.createValidator($("#btnEnviar"), ValidatorJS.VALIDATE_ON_SUBMIT,
+                        {
+                            validValidation: validacionValida,
+                            invalidValidation: validacionInvalida,
+                            validField: campoValido,
+                            invalidField: campoInvalido,
+                            validForm: formularioValido,
+                            invalidForm: formularioInvalido
+                        });
+
+                validator3.addValidation($("#txtNombre2"), ValidatorJS.VALIDATION_TYPE_REQUIRED);
+                validator3.addValidation($("#txtApellido2"), ValidatorJS.VALIDATION_TYPE_REQUIRED);
+            });
+        </script>
+        <script type="text/javascript" src="pattern_matcher.js"></script>
+        <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"/>
+    </head>
+    <body>
+        <div class="container">
+            <h3 style="text-align:center;">Formulario</h3>
+            <form class="form-horizontal" id="formulario">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Nombre</label>
+                    <div class="col-sm-4 ">
+                        <input type="text" class="form-control texto" id="txtNombre" placeholder="Nombre" >
+                    </div>
+                    <label class="col-sm-2 control-label">Apellido</label>
+                    <div class="col-sm-4 ">
+                        <input type="text" class="form-control texto" id="txtApellido" placeholder="Apellido" >
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Fecha de nacimiento</label>
+                    <div class="col-sm-4 ">
+                        <input type="text" class="form-control" id="txtNacimiento" placeholder="dd/mm/aaaa">
+                    </div>
+                    <label class="col-sm-2 control-label">Sexo</label>
+                    <div class="col-sm-4" id="divSexo">
+                        <label class="radio-inline">
+                            <input type="radio" name="radSexo" id="optionsRadios1" value="h">
+                            Hombre
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="radSexo" id="optionsRadios2" value="m">
+                            Mujer
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Email</label>
+                    <div class="col-sm-4 ">
+                        <input type="text" class="form-control" id="txtEmail" placeholder="e-mail">
+                    </div>
+                    <label class="col-sm-2 control-label">Teléfono</label>
+                    <div class="col-sm-4 ">
+                        <input type="text" class="form-control" id="txtTelefono" placeholder="Teléfono">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Edad</label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" id="txtEdad" placeholder="Edad">
+                    </div>
+                    <label class="col-sm-2 control-label">Estatura</label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" id="txtEstatura" placeholder="Estatura">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Nacionalidad</label>
+                    <div class="col-sm-4">
+                        <select class="form-control" id="slcNacionalidad">
+                            <option value="-1">Seleccione</option>
+                            <option value="0">Argentina</option>
+                            <option value="1">Mexico</option>
+                            <option value="2">Paraguay</option>
+                            <option value="3">Uruguay</option>
+                        </select>
+                    </div>
+                    <label class="col-sm-2 control-label">DNI</label>
+                    <div class="col-sm-4 ">
+                        <input type="text" class="form-control" id="txtDni" placeholder="DNI" >
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Domicilio</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="txtDomicilio" placeholder="Domicilio" >
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Estudios</label>
+                    <div class="col-sm-10" id="divEstudios">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name='chkEstudios' id="chkUniversidad"> Universitarios
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name='chkEstudios'> Secundarios
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name='chkEstudios'> Primarios
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-primary" id="btnRegistrar">Enviar</button>
+                    </div>
+                </div>
+            </form>
+            <hr/>
+            <form class="form-horizontal" id="formulario2">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Nombre</label>
+                    <div class="col-sm-4 ">
+                        <input type="text" class="form-control texto" id="txtUsuario" placeholder="Nombre de usuario" >
+                    </div>
+                    <label class="col-sm-2 control-label">Password</label>
+                    <div class="col-sm-4 ">
+                        <input type="password" class="form-control texto" id="txtPassword" placeholder="Password" >
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-primary" id="btnRegistrar">Enviar</button>
+                    </div>
+                </div>
+            </form>
+            <hr />
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Nombre</label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control texto" id="txtNombre2" placeholder="Nombre" />
+                    </div>
+                    <label class="col-sm-2 control-label">Apellido</label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control texto" id="txtApellido2" placeholder="Apellido" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="button" class="btn btn-primary" id="btnEnviar">Enviar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
 </html>

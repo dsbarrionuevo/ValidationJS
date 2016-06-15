@@ -283,7 +283,7 @@
                                                     Función a ejecutarse cuando se verifica que el formulario es válido, cuando todas las validaciones de todos sos campos son verificadas como válidas. Signatura:
                                                 </p>
                                                 <p>
-                                                    function validField(options: { event: Event Object, validator: Validator object, form: jQuery object }): void
+                                                    function validField(options: { event: Event Object, validator: Validator object,  trigger: int[, form: jQuery object, button: jQuery object] }): void
                                                 </p>
                                                 <p>
                                                     Donde los parámetros son:
@@ -296,7 +296,13 @@
                                                     <u>validator:</u> Objeto Validator que valida el formulario.
                                                     </li>
                                                     <li>
-                                                    <u>form:</u> Objeto jQuery que representa el formulario.
+                                                    <u>trigger:</u> Número entero que representa el evento disparador de validaciones (VALIDATE_ON_FORM_SUBMIT, VALIDATE_ON_BUTTON_CLICK, VALIDATE_ON_FIELD_BLUR, VALIDATE_ON_FIELD_CHANGE o VALIDATE_ON_CUSTOM_EVENT).
+                                                    </li>
+                                                    <li>
+                                                    <u>form (opcional):</u> Objeto jQuery que representa el formulario cuando el trigger (disparador de validaciones) es del tipo VALIDATE_ON_FORM_SUBMIT.
+                                                    </li>
+                                                    <li>
+                                                    <u>button (opcional):</u> Objeto jQuery que representa el botón que dispara las validaciones cuando el trigger (disparador de validaciones) es del tipo VALIDATE_ON_BUTTON_CLICK.
                                                     </li>
                                                 </ul>
                                             </td>
@@ -395,7 +401,7 @@
                     </div>
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            Método <strong>validator.addValidation( field: jQuery object, validationType: int, options: Json object )</strong>
+                            Método <strong>validator.addValidation( field: jQuery object, validationType: int, options: Json object ): void</strong>
                         </div>
                         <div class="panel-body">
                             <p>
@@ -506,7 +512,7 @@
                                                     Es el mensaje que se mostrará en caso de verificar la validación como inválida.
                                                     </li>
                                                     <li>
-                                                    <u>requierd:</u>
+                                                    <u>required:</u>
                                                     Especifica que el campo es obligatorio (no debe ser vacío), este parámetro depende del tipo de validación.
                                                     </li>
                                                 </ul>
@@ -516,19 +522,69 @@
                                                 <ul>
                                                     <li>
                                                     <u>VALIDATION_TYPE_REQUIRED:</u>
-                                                    Valida que se haya ingresado o seleccionado un valor en el campo.
+                                                    Valida que se haya ingresado o seleccionado un valor en el campo. Dependiendo del tipo de campo de control:
+                                                    <ul>
+                                                        <li>
+                                                            Campo de tipo texto (text, password, textarea): Valida que el valor del mismo tengas uno o más carateres distintos de blanco.
+                                                        </li>
+                                                        <li>
+                                                            Campo de selección (select): Valida que el valor de la opción seleccionada no represente "nada seleccionado" dependiendo de los parámetros opcionales:
+                                                            <ul>
+                                                                <li>
+                                                                    Sin ningún parámetro opcional (funcionamiento por defecto): Intenta convertir a número entero el valor de la opción seleccionada y valida que sea distinta de '-1' (menos uno).
+                                                                </li>
+                                                                <li>
+                                                                    Parámetro 'invalidRequiredValue': Es el valor de la opción que representa el vacío. El valor de la opción seleccionada se compara este parámetro y así validar si seleccionó algo el usuario.
+                                                                </li>
+                                                                <li>
+                                                                    Parámetro 'checkRequiredMethod': Representa la función de validación que determina cuando un 'select' tiene seleccionada una opción "vacío". Su signatura es:
+                                                                    <p>
+                                                                        function checkRequiredMethod(value: string) : boolean
+                                                                    </p>
+                                                                    <p>
+                                                                        Donde 'value' es el valor de la opción seleccionada y debería retornar "true" en caso de que la opción seleccionada represente vacío.
+                                                                    </p>
+                                                                </li>
+                                                            </ul>
+                                                        </li>
+                                                    </ul>
                                                     </li>
                                                     <li>
                                                     <u>VALIDATION_TYPE_LENGTH:</u>
-                                                    Valida que el campo de texto posea la cantidad de caracteres impuesta como límite.
+                                                    Valida que el campo de texto posea la cantidad de caracteres impuesta como límite. Parámetros opcionales:
+                                                    <ul>
+                                                        <li>
+                                                            Parámetro 'min': Representa la cantidad mínima de caracteres que deber tener el campo de texto.
+                                                        </li>
+                                                        <li>
+                                                            Parámetro 'max': Representa la cantidad máxima de caracteres que deber tener el campo de texto.
+                                                        </li>
+                                                    </ul>
+                                                    <p>
+                                                        Observaciones: ambos parámetros son opcionales y no depende uno del otro. En el caso de que se establezca el parámtro 'max' pero no un mínimo, el campo puede ser vacío y sí es válido.
+                                                    </p>
                                                     </li>
                                                     <li>
                                                     <u>VALIDATION_TYPE_NUMBER:</u>
-                                                    Valida que el campo posea un valor de tipo numérico. Puede ser entero o decimal, posito o negativo, en caso de ser decimal sólo puede usarse el punto como separador.
+                                                    Valida que el campo posea un valor de tipo numérico. Puede ser entero o decimal, posito o negativo, en caso de ser decimal sólo puede usarse el punto como separador. No tiene parámetros opcionales.
+                                                    <p>
+                                                        Observaciones: En caso de que el campo esté vacío se considera válido, porque no hay nada cargado. Esta validación valida que lo que esté cargado sea un número.
+                                                    </p>
                                                     </li>
                                                     <li>
                                                     <u>VALIDATION_TYPE_INT:</u>
-                                                    Valida que el campo posea un valor numérico entero (positivo o negativo).
+                                                    Valida que el campo posea un valor numérico entero (positivo o negativo). Parámetros opcionales:
+                                                    <ul>
+                                                        <li>
+                                                            Parámetro 'min': Representa el valor entero mínimo aceptado.
+                                                        </li>
+                                                        <li>
+                                                            Parámetro 'max': Representa el valor entero máximo aceptado.
+                                                        </li>
+                                                    </ul>
+                                                    <p>
+                                                        Observaciones: En caso de que el campo esté vacío se considera válido, porque no hay nada cargado. Esta validación valida que lo que esté cargado sea un número entero. Ambos parámetros son opcionales y no depende uno del otro.
+                                                    </p>
                                                     </li>
                                                     <li>
                                                     <u>VALIDATION_TYPE_DECIMAL:</u>
@@ -536,27 +592,71 @@
                                                     </li>
                                                     <li>
                                                     <u>VALIDATION_TYPE_VALUE:</u>
-                                                    Valida que el valor del campo sea un número comprendido en los límites dados.
+                                                    Valida que el valor del campo sea un número comprendido en los límites dados. Parámetros <u>obligatorios</u>:
+                                                    <ul>
+                                                        <li>
+                                                            Parámetro 'min': Representa el mínimo número aceptado.
+                                                        </li>
+                                                        <li>
+                                                            Parámetro 'max': Representa el máximo número aceptado.
+                                                        </li>
+                                                    </ul>
+                                                    <p>
+                                                        Observaciones: ambos parámetros son opcionales y no depende uno del otro.
+                                                    </p>
                                                     </li>
                                                     <li>
                                                     <u>VALIDATION_TYPE_EMAIL:</u>
-                                                    Valida que el campo posea una dirección de email válida.
+                                                    Valida que el campo posea una dirección de email válida. El formato por defecto es el siguiente:
+                                                    <p>
+                                                        [carácteres alfanuméricos]@[caracteres alfabéticos y el guión bajo].[de dos a tres carácteres alfabéticos]
+                                                    </p>
+                                                    <p>
+                                                        Parámmetros opcionales
+                                                    </p>
+                                                    <ul>
+                                                        <li>
+                                                            Parámetro 'format': Representa la expresión regular a usar como reemplazo del formato dado por defecto.
+                                                        </li>
+                                                    </ul>
+                                                    <p>
+                                                        Observaciones: En caso de que el campo esté vacío la validación verifica el campo como válido, porque no hay caracter que contrastar.
+                                                    </p>
                                                     </li>
                                                     <li>
                                                     <u>VALIDATION_TYPE_GROUP:</u>
-                                                    Valida que el grupo de elementos (sean checkboxes o radiobuttons) que posean al mismo grupo estén seleccionados con una cantidad que esté dentro de los límites dados.
+                                                    Valida que el grupo de elementos (sean checkboxes o radiobuttons) que provean al mismo grupo estén seleccionados con una cantidad que esté dentro de los límites dados.
+                                                    <small>Documentación pendiente</small>
                                                     </li>
                                                     <li>
                                                     <u>VALIDATION_TYPE_RADIO_GROUP:</u>
                                                     Valida que el grupo de radiobuttons tenga un elemento seleccionado al menos.
+                                                    <small>Documentación pendiente</small>
                                                     </li>
                                                     <li>
                                                     <u>VALIDATION_TYPE_CHECKBOX_GROUP:</u>
                                                     Valida que el grupo de checkboxes posea la cantidad de elementos seleccionados con una cantidad que esté dentro de los límites dados.
+                                                    <small>Documentación pendiente</small>
                                                     </li>
                                                     <li>
                                                     <u>VALIDATION_TYPE_CUSTOM:</u>
-                                                    Aplica una validación personalizada al campo usando una función cuyo parámetro es el valor del campo y retorna "true" si es válido y "false" en caso contrario.
+                                                    Aplica una validación personalizada al campo usando una función cuyo parámetro es el valor del campo y retorna "true" si es válido y "false" en caso contrario. Parámetros <u>obligatorios</u>
+                                                    <ul>
+                                                        <li>
+                                                            Parámetro 'id': Valor identificatorio del nombre que se le dió a la validación personalizada con el método 'addCustomValidation'.
+                                                        </li>
+                                                    </ul>
+                                                    <p>
+                                                        Parámetros opcionales:
+                                                    </p>
+                                                    <ul>
+                                                        <li>
+                                                            Parámetro 'parameters': Objeto JSON que representa los parámetros recibiría la función personalizada.
+                                                        </li>
+                                                    </ul>
+                                                    <p>
+                                                        Observaciones: Es necesario que la validación personalizada ya existe y esté asociada al validator al se agrega esta validación.
+                                                    </p>
                                                     </li>
                                                 </ul>
                                             </td>
@@ -568,30 +668,86 @@
                     </div>
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            removeValidation(field, validationType)
+                            Método <strong>validator.removeValidation( field: jQuery object, validationType: int ): void</strong>
                         </div>
                         <div class="panel-body">
+                            <p>
+                                Elimina una validación específica para un campo del validator.
+                            </p>
+                            <p>
+                                Parámetros:
+                            </p>
+                            <ul>
+                                <li>
+                                <u>field:</u> Objeto jQuery que representa el campo donde se va a eliminar el tipo de validación. El objeto jQuery debe ser un selector por id únicamente.
+                                </li>
+                                <li>
+                                <u>validationType:</u> Número entero que representa el tipo de validación.
+                                </li>
+                            </ul>
                         </div>
                     </div>
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            addCustomValidation(id, method)
+                            Método <strong>addCustomValidation( id: string, method: function ): boolean</strong>
                         </div>
                         <div class="panel-body">
+                            <p>
+                                Agrega una validación personalizada al objeto global ValidatorJS, la misma podrá ser usada en cualquier instancia validator con el método 'addValidation' con validationType igual a 'VALIDATION_TYPE_CUSTOM'. Retorna "true" si la valición personalizada pude ser agregada, esto es cuando no existe otra validación personalizada con el mismo 'id'.
+                            </p>
+                            <p>
+                                Parámetros:
+                            </p>
+                            <ul>
+                                <li>
+                                <u>id:</u> Valor identificatorio del nombre de la validación personalizada. Debe ser único.
+                                </li>
+                                <li>
+                                <u>method:</u> Función a ejecutarse al momento de tratar de validar el formulario y/o campo que tenga esa validación personalizada. Su signatura es la siguiente:
+                                <p>
+                                    function method ( value: string ): boolean
+                                </p>
+                                <p>
+                                    Donde "value" es el valor del campo que posee en el momento de la validación, y debería retornar "true" en caso de cumpliar con la validación (es válido) y "false" en caso contrario.
+                                </p>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            getCustomValidation(id)
+                            Método <strong>getCustomValidation( id: string ): CustomValidation Object</strong>
                         </div>
                         <div class="panel-body">
+                            <p>
+                                Recupera una validación personalizada del objeto global ValidatorJS dado su "id". Retorna "null" en caso de encontrar la validación personalizada.
+                            </p>
+                            <p>
+                                Parámetros:
+                            </p>
+                            <ul>
+                                <li>
+                                <u>id:</u> Valor identificatorio del nombre de la validación personalizada a recuperar.
+                                </li>
+                            </ul>
                         </div>
                     </div>
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            removeCustomValidation(id)
+                            Método <strong>removeCustomValidation( id: string ): boolean</strong>
                         </div>
                         <div class="panel-body">
+                            <p>
+                                Elimina una validación personalizada del objeto global ValidatorJS dado su "id". Retorna "true" si pudo eliminar la validación personalizada, y "false" en caso contrario.
+                            </p>
+                            <p>
+                                Parámetros:
+                            </p>
+                            <ul>
+                                <li>
+                                <u>id:</u> Valor identificatorio del nombre de la validación personalizada a eliminar.
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>

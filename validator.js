@@ -112,6 +112,7 @@ var ValidatorJS = (function () {
                 for (var i = 0; i < validationsForField.length; i++) {
                     var validationForField = validationsForField[i];
                     var validValidation = validationForField.validate();
+                    console.log(validationForField);
                     instance.callValidationFunctions({
                         event: evt,
                         validation: validationForField,
@@ -121,8 +122,8 @@ var ValidatorJS = (function () {
                     if (!validValidation) {
                         validField = false;
                     }
-                    if (validationForField.mensaje !== undefined) {
-                        messages.push(validationForField.mensaje);
+                    if (validationForField.message !== undefined) {
+                        messages.push(validationForField.message);
                     }
                 }
                 instance.callFieldFunctions({
@@ -150,6 +151,9 @@ var ValidatorJS = (function () {
                                         validationFunction(evt, validationObject.field.get(0).id);
                                     });
                                 } else {
+                                    //se asigna un onblur por cada validacion agregada 
+                                    //a un campo, en realidad deberia agregar una 
+                                    //sola vez onblur y no por cada validacion
                                     validationObject.field.blur(function (evt) {
                                         validationFunction(evt, validationObject.field.get(0).id);
                                     });
@@ -281,7 +285,7 @@ var ValidatorJS = (function () {
                 }
             } else {
                 if (instance.validValidation !== undefined) {
-                    delete parameters.message;
+                    //delete parameters.message;
                     instance.validValidation(parameters);
                 }
             }
@@ -293,7 +297,7 @@ var ValidatorJS = (function () {
                 }
             } else {
                 if (instance.validField !== undefined) {
-                    delete parameters.messages;
+                    //delete parameters.messages;
                     instance.validField(parameters);
                 }
             }
@@ -334,7 +338,6 @@ var ValidatorJS = (function () {
                     }
                     if (correctButtonGiven) {
                         instance.trigger.click(function (evt) {
-                            console.log("...");
                             instance.validate(evt, validationEvent);
                         });
                     }
@@ -464,7 +467,7 @@ var ValidatorJS = (function () {
             var value = instance.field.val().trim();
             switch (instance.validationType) {
                 case(Validation.prototype.VALIDATION_TYPE_REQUIRED):
-                    if (checkAttributeMatches(instance.fieldType, ["text", "password", "number", "email"])) {
+                    if (checkAttributeMatches(instance.fieldType, ["text", "password", "number", "email", "textarea"])) {
                         return value.length > 0;
                     } else if (instance.fieldType === "select") {
                         //en caso de que el select posea cadenas por ejemplo, y 
@@ -503,18 +506,19 @@ var ValidatorJS = (function () {
                     if (isNaN(value)) {
                         return false;
                     }
-                    var length = instance.field.val().trim().length;
-                    //esto no deberia hacerse aqui, porque si necesito validar 
-                    //que sea entero y tambine requerido debo agregar ambas 
-                    //validaciones, y si en la validacion de int tambien hago 
-                    //la de requerido entonces la de requerido se lanzaria dos veces.
-                    if (instance.parameters !== undefined) {
-                        var required = instance.parameters.required;
-                        if (required !== undefined && required && length === 0)
-                            return false;
-                    }
-                    if (length === 0)
-                        return true;
+                    /*var length = instance.field.val().trim().length;
+                     //esto no deberia hacerse aqui, porque si necesito validar 
+                     //que sea entero y tambine requerido debo agregar ambas 
+                     //validaciones, y si en la validacion de int tambien hago 
+                     //la de requerido entonces la de requerido se lanzaria dos veces.
+                     //COMENTARIO TOMADO EN CUENTA
+                     if (instance.parameters !== undefined) {
+                     var required = instance.parameters.required;
+                     if (required !== undefined && required && length === 0)
+                     return false;
+                     }
+                     if (length === 0)
+                     return true;*/
                     var isInt = /^-?\d+?$/.test(value);
                     if (isInt) {
                         var int = parseInt(value);
@@ -523,29 +527,24 @@ var ValidatorJS = (function () {
                             return false;
                         }
                         if (instance.parameters === undefined) {
+                            //porque si no tiene los parametros min y max sólo quiere 
+                            //validar que sea un numero entero
                             return true;
                         }
+                        //min y max podrian eliminarse de esta validacion y solucionarlo usando dos validaciones: type_int y type_value
                         var min = instance.parameters.min;
                         var max = instance.parameters.max;
-                        //esta comprobacion de != undefined provoca que necesariamente 
-                        //si quiero comprobar un rango debo setear ambos parametros, 
-                        //y no me deja por ejemplo soo setear el min o solo el max. 
-                        //Deberia cambiarse...
-                        if (min === undefined || max === undefined) {
-                            return true;
-                        } else {
-                            if (min !== undefined) {
-                                if (int < min) {
-                                    return false;
-                                }
+                        if (min !== undefined) {
+                            if (int < min) {
+                                return false;
                             }
-                            if (max !== undefined) {
-                                if (int > max) {
-                                    return false;
-                                }
-                            }
-                            return true;
                         }
+                        if (max !== undefined) {
+                            if (int > max) {
+                                return false;
+                            }
+                        }
+                        return true;
                     }
                     return false;
                 case(Validation.prototype.VALIDATION_TYPE_DECIMAL):
@@ -558,7 +557,7 @@ var ValidatorJS = (function () {
                     if (length > 0) {
                         return /^-?\d+(\.\d+)?$/.test(value);
                     }
-                    //faltan validaciones de min y max
+                    //faltan validaciones de min y max, aunque para validar que sea decimal y este entre un rango se podria solucionar usando dos validaciones: type_decimal y type_value
                     return true;
                     break;
                 case(Validation.prototype.VALIDATION_TYPE_LENGTH):
@@ -619,9 +618,17 @@ var ValidatorJS = (function () {
                     return true;
                     break;
                 case(Validation.prototype.VALIDATION_TYPE_EMAIL):
-                    var length = instance.field.val().trim().length;
-                    if (length > 0) {
-                        return /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(value);
+                    if (value.length > 0) {
+                        if (instance.parameters === undefined || (instance.parameters !== undefined && instance.parameters.format === undefined)) {
+                            return /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(value);
+                        } else {
+                            var format = instance.parameters.format;
+                            if (format === undefined)
+                            {
+                                return false;
+                            }
+                            return format.test(value);
+                        }
                     }
                     return true;
                     break;
@@ -850,7 +857,6 @@ var ValidatorJS = (function () {
                 myself.validators.length,
                 new Validator(parameters)
                 );
-        console.log(newValidatorInstance);
         myself.validators.push(newValidatorInstance);
         return newValidatorInstance;
     };
