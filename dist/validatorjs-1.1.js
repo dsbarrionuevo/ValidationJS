@@ -39,7 +39,8 @@ var ValidatorJS = (function () {
         this.before = args.before;
         this.after = args.after;
         //podrias crear una function onError que capturaria todas las excepciones...
-
+        // Array asociativo: como clave utiliza el id del campo y como valor un array numerico de tipos de validaciones.
+        this.validationTriggersForFields = {};
         // Array asociativo: utiliza como clave el id del campo pasado y como valor un array numerico de validaciones
         // Este array mantiene las validaciones que se deberán realizar por cada campo.
         this.validations = {};
@@ -146,52 +147,69 @@ var ValidatorJS = (function () {
             };
             for (var i = 0; i < instance.validationTriggers.length; i++) {
                 var validationType = instance.validationTriggers[i];
-                switch (validationType) {
-                    case(Validator.prototype.VALIDATOR_SUBMIT):
-                        //la validacion se realiza al hacer submit del formulario entero
-                        break;
-                        //la ultima validacion individual enmascara los resultados de las validaciones anteriores
-                    case(Validator.prototype.VALIDATE_ON_FIELD_BLUR):
-                        for (var field in instance.validations) {
-                            if (field === validationObject.field.get(0).id) {
-                                var fieldType = getType(validationObject.field);
-                                if (fieldType === "div") {
-                                    //el evento onblur no se dispara en los divs... por eso busco sus inputs hijos
-                                    //esto se usaria por ejempo si quiero validar un grupo de checkboxs
-                                    validationObject.field.find("input").blur(function (evt) {
-                                        validationFunction(evt, validationObject.field.get(0).id);
-                                    });
-                                } else {
-                                    //se asigna un onblur por cada validacion agregada 
-                                    //a un campo, en realidad deberia agregar una 
-                                    //sola vez onblur y no por cada validacion
-                                    validationObject.field.blur(function (evt) {
-                                        validationFunction(evt, validationObject.field.get(0).id);
-                                    });
-                                }
+                var triggerAlreadySet = false;
+                for (var fieldIdForValidationTriggers in instance.validationTriggersForFields) {
+                    if (fieldIdForValidationTriggers === validationObject.field.get(0).id) {
+                        for (var k = 0; k < instance.validationTriggersForFields[fieldIdForValidationTriggers].length; k++) {
+                            if (instance.validationTriggersForFields[fieldIdForValidationTriggers][k] === validationType) {
+                                triggerAlreadySet = true;
                             }
                         }
-                        break;
-                    case(Validator.prototype.VALIDATE_ON_FIELD_CHANGE):
-                        for (field in instance.validations) {
-                            if (field === validationObject.field.get(0).id) {
-                                var fieldType = getType(validationObject.field);
-                                if (checkAttributeMatches(fieldType, ["text", "password", "number", "email"])) {
-                                    validationObject.field.keyup(function (evt) {
-                                        validationFunction(evt, validationObject.field.get(0).id);
-                                    });
-                                } else {
-                                    validationObject.field.change(function (evt) {
-                                        validationFunction(evt, validationObject.field.get(0).id);
-                                    });
+                    }
+                }
+                if (triggerAlreadySet === false) {
+                    switch (validationType) {
+                        case(Validator.prototype.VALIDATOR_SUBMIT):
+                            //la validacion se realiza al hacer submit del formulario entero
+                            break;
+                            //la ultima validacion individual enmascara los resultados de las validaciones anteriores
+                        case(Validator.prototype.VALIDATE_ON_FIELD_BLUR):
+                            for (var field in instance.validations) {
+                                if (field === validationObject.field.get(0).id) {
+                                    var fieldType = getType(validationObject.field);
+                                    if (fieldType === "div") {
+                                        //el evento onblur no se dispara en los divs... por eso busco sus inputs hijos
+                                        //esto se usaria por ejempo si quiero validar un grupo de checkboxs
+                                        validationObject.field.find("input").blur(function (evt) {
+                                            validationFunction(evt, validationObject.field.get(0).id);
+                                        });
+                                    } else {
+                                        //se asigna un onblur por cada validacion agregada 
+                                        //a un campo, en realidad deberia agregar una 
+                                        //sola vez onblur y no por cada validacion
+                                        validationObject.field.blur(function (evt) {
+                                            validationFunction(evt, validationObject.field.get(0).id);
+                                        });
+                                    }
                                 }
                             }
-                        }
-                        break;
+                            break;
+                        case(Validator.prototype.VALIDATE_ON_FIELD_CHANGE):
+                            for (field in instance.validations) {
+                                if (field === validationObject.field.get(0).id) {
+                                    var fieldType = getType(validationObject.field);
+                                    if (checkAttributeMatches(fieldType, ["text", "password", "number", "email"])) {
+                                        validationObject.field.keyup(function (evt) {
+                                            validationFunction(evt, validationObject.field.get(0).id);
+                                        });
+                                    } else {
+                                        validationObject.field.change(function (evt) {
+                                            validationFunction(evt, validationObject.field.get(0).id);
+                                        });
+                                    }
+                                }
+                            }
+                            break;
+                    }
+                    if (instance.validationTriggersForFields[validationObject.field.get(0).id] === undefined) {
+                        instance.validationTriggersForFields[validationObject.field.get(0).id] = [validationType];
+                    } else {
+                        instance.validationTriggersForFields[validationObject.field.get(0).id].push(validationType);
+                    }
                 }
             }
         };
-        
+
         this.addValidationTrigger = function (validationType) {
             for (var i = 0; i < instance.validationTriggers.length; i++) {
                 if (validationType === instance.validationTriggers[i]) {
