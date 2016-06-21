@@ -1,0 +1,102 @@
+<html>
+    <head>
+        <title>Prueba de librería ValidationJS</title>
+        <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"/>
+        <script type="text/javascript" src="jquery.js"></script>
+        <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="../validator.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function () {
+
+                var validator = ValidatorJS.createValidator(
+                        {
+                            triggers: [ValidatorJS.VALIDATE_ON_CUSTOM_EVENT],
+                            validValidation: function (args) {
+                                if (args.message !== undefined) {
+                                    MessagesManager.removeMessage(args.message.name);
+                                }
+                            },
+                            validField: function (args) {
+                                args.field.closest(".form-group").removeClass("has-error");
+                            },
+                            invalidField: function (args) {
+                                args.field.closest(".form-group").addClass("has-error");
+                                for (var i = 0; i < args.messages.length; i++) {
+                                    MessagesManager.addMessage(args.messages[i].name, args.messages[i].content, "danger");
+                                }
+                            },
+                            validForm: function (agrs) {
+                                if (agrs.trigger === ValidatorJS.VALIDATE_ON_FORM_SUBMIT) {
+                                    agrs.event.preventDefault();
+                                }
+                            },
+                            validationCustomEvent: function (validate) {
+                                $("body").click(function () {
+                                    validate();
+                                });
+                            }
+                        });
+                validator.addValidation($("#email"), ValidatorJS.VALIDATION_TYPE_EMAIL, {message: {name: "wrong_email", content: "Email with wrong format"}});
+                validator.addValidation($("#email"), ValidatorJS.VALIDATION_TYPE_REQUIRED, {message: {name: "empty_email", content: "Email required"}});
+                validator.addValidation($("#password"), ValidatorJS.VALIDATION_TYPE_REQUIRED, {message: {name: "empty_password", content: "Password required"}});
+
+                //messages manager class
+                var MessagesManager = (function (messageContainer) {
+                    var me = {};
+                    me.addMessage = function (name, content, type) {
+                        if (messageContainer.find("li[data-name='" + name + "']").length === 0) {
+                            var type = type || "info";
+                            messageContainer.append("<li data-name='" + name + "'><div class='alert alert-" + type + "'>" + content + "</div></li>");
+                        }
+                    };
+                    me.removeMessage = function (name) {
+                        messageContainer.children("li[data-name='" + name + "']").remove();
+                    };
+                    return me;
+                })($("#messages"));
+
+            });
+        </script>
+        <style>
+            #messages{
+                list-style-type: none;
+                padding-left: 0px;
+            }
+            #messages .alert{
+                padding: 6px 10px;
+                margin-bottom: 4px;
+            }
+        </style>
+    </head>
+    <body>
+        <br/>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-4 col-sm-offset-4">
+                    <h4>
+                        Login into the website
+                    </h4>
+                    <ul id="messages">
+                    </ul>
+                    <form class="form-horizontal" id="form">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <div class="input-group-addon">@</div>
+                                <input type="text" class="form-control" id="email" placeholder="email">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <div class="input-group-addon"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></div>
+                                <input type="text" class="form-control" id="password" placeholder="password">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <input id="btn" type="submit" class="btn btn-primary form-control" value="Sign in"/>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

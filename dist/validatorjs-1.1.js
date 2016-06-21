@@ -134,7 +134,7 @@ var ValidatorJS = (function () {
                     if (!validValidation) {
                         validField = false;
                     }
-                    if (validationForField.message !== undefined) {
+                    if (validationForField.message !== undefined && validValidation === false) {
                         messages.push(validationForField.message);
                     }
                 }
@@ -268,7 +268,7 @@ var ValidatorJS = (function () {
                     if (!validValidation) {
                         //si al menos una validacion de este campo es invalida, todo el campo es invalido
                         validField = false;
-                        if (validationForField.message !== undefined) {
+                        if (validationForField.message !== undefined && validValidation === false) {
                             messagesForField.push(validationForField.message);
                         }
                     }
@@ -387,7 +387,7 @@ var ValidatorJS = (function () {
         //agregando valores por defecto en caso de no haber seteado los necesarios para funcionar
         var globalTriggersFound = false;
         for (var i = 0; i < instance.validationTriggers.length; i++) {
-            if (instance.validationTriggers[i] === Validator.prototype.VALIDATE_ON_FORM_SUBMIT || instance.validationTriggers[i] === Validator.prototype.VALIDATE_ON_BUTTON_CLICK) {
+            if (instance.validationTriggers[i] === Validator.prototype.VALIDATE_ON_FORM_SUBMIT || instance.validationTriggers[i] === Validator.prototype.VALIDATE_ON_BUTTON_CLICK || instance.validationTriggers[i] === Validator.prototype.VALIDATE_ON_CUSTOM_EVENT) {
                 globalTriggersFound = true;
                 //agrego loas validaciones de tipo trigger
                 addEventListenerForTrigger(instance.validationTriggers[i]);
@@ -399,8 +399,27 @@ var ValidatorJS = (function () {
                 //si salta expecion entonces intento en el catch buscar un boton y agregar el callback de button por defecto
                 addEventListenerForTrigger(Validator.prototype.VALIDATE_ON_FORM_SUBMIT);
             } catch (error) {
-                //ahora si esto lanza error es que de vedad no puede funcionar el validador, hizo el mejor intento
-                addEventListenerForTrigger(Validator.prototype.VALIDATE_ON_BUTTON_CLICK);
+                //ahora si esto lanza error es que de vedad no puede funcionar el validador, hizo el mejor intento,
+                //a no ser que se haya especificado una validacion custm
+                try {
+                    addEventListenerForTrigger(Validator.prototype.VALIDATE_ON_BUTTON_CLICK);
+                } catch (error) {
+                    var customValidatorFound = false;
+                    for (var i = 0; i < instance.validationTriggers.length; i++) {
+                        if (instance.validationTriggers[i] === Validator.prototype.VALIDATE_ON_CUSTOM_EVENT) {
+                            customValidatorFound = true;
+                        }
+                    }
+                    if (customValidatorFound === false) {
+                        throw "No validation trigger found";
+                    } else {
+                        if (args.validationCustomEvent !== undefined && (typeof (args.validationCustomEvent)).toLowerCase() === "function") {
+                            args.validationCustomEvent(instance.validate);
+                        } else {
+                            throw "No validation trigger found";
+                        }
+                    }
+                }
             }
         }
     }
