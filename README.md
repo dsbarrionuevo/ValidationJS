@@ -10,4 +10,5 @@ Personalizados.
 Metadatos de archivos.
 Y más...
 
-Versión no estable. La fecha probable de estabilidad + tutorial incluido será el 01/03/2016.
+
+Versión actual 1.1.0
