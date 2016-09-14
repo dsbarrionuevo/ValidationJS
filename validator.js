@@ -1,5 +1,5 @@
 /*!
- * ValidatorJS JavaScript Library v1.1
+ * ValidatorJS JavaScript Library v1.1.1
  * Project site: https://github.com/dsbarrionuevo/ValidationJS
  *
  * Dependencies:
@@ -688,7 +688,7 @@ var ValidatorJS = (function () {
                 case(Validation.prototype.VALIDATION_TYPE_EMAIL):
                     if (value.length > 0) {
                         if (instance.parameters === undefined || (instance.parameters !== undefined && instance.parameters.format === undefined)) {
-                            return /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(value);
+                            return /^[a-zA-Z0-9\._%\+-]+@[a-zA-Z_0-9.-]+\.[a-zA-Z]{2,}$/.test(value);
                         } else {
                             var format = instance.parameters.format;
                             if (format === undefined)
