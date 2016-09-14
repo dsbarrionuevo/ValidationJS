@@ -11,4 +11,4 @@ Metadatos de archivos.
 Y más...
 
 
-Versión actual 1.1.0
+Versión actual 1.1.1
