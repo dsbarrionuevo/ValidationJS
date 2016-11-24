@@ -28,10 +28,11 @@
                         agrs.field.parents("div").first().addClass("has-error");
                     }
                 }
-                function formularioValido(agrs) {
+                function formularioValido(args) {
                     console.log("Formulario VALIDO");
+                    args.event.preventDefault();
                 }
-                function formularioInvalido(agrs) {
+                function formularioInvalido(args) {
                     console.log("Formulario invalido");
                 }
 
@@ -61,7 +62,7 @@
                     <div class="col-sm-4 ">
                         <input type="text" class="form-control texto" id="txtNumero" placeholder="Número" >
                     </div>
-                    
+
                 </div>
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
