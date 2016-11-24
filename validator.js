@@ -1,5 +1,5 @@
 /*!
- * ValidatorJS JavaScript Library v1.1
+ * ValidatorJS JavaScript Library v1.1.2 (01/10/2016)
  * Project site: https://github.com/dsbarrionuevo/ValidationJS
  *
  * Dependencies:
@@ -517,7 +517,11 @@ var ValidatorJS = (function () {
                 value = instance.field.val();
             } else {
                 //hago trim por defecto
-                value = instance.field.val().trim();
+                if (instance.field.val() !== null) {
+                    value = instance.field.val().trim();
+                } else {
+                    value = instance.field.val();
+                }
             }
             switch (instance.validationType) {
                 case(Validation.prototype.VALIDATION_TYPE_REQUIRED):
