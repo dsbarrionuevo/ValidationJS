@@ -1,5 +1,5 @@
 /*!
- * ValidatorJS JavaScript Library v1.1.1
+ * ValidatorJS JavaScript Library v1.1.2
  * Project site: https://github.com/dsbarrionuevo/ValidationJS
  *
  * Dependencies:
@@ -517,7 +517,11 @@ var ValidatorJS = (function () {
                 value = instance.field.val();
             } else {
                 //hago trim por defecto
-                value = instance.field.val().trim();
+                if (instance.field.val() !== null) {
+                    value = instance.field.val().trim();
+                } else {
+                    value = instance.field.val();
+                }
             }
             switch (instance.validationType) {
                 case(Validation.prototype.VALIDATION_TYPE_REQUIRED):
@@ -557,22 +561,12 @@ var ValidatorJS = (function () {
                     return !isNaN(value);
                     break;
                 case(Validation.prototype.VALIDATION_TYPE_INT):
+                    var length = instance.field.val().trim().length;
+                    if (length === 0)
+                        return true;
                     if (isNaN(value)) {
                         return false;
                     }
-                    /*var length = instance.field.val().trim().length;
-                     //esto no deberia hacerse aqui, porque si necesito validar 
-                     //que sea entero y tambine requerido debo agregar ambas 
-                     //validaciones, y si en la validacion de int tambien hago 
-                     //la de requerido entonces la de requerido se lanzaria dos veces.
-                     //COMENTARIO TOMADO EN CUENTA
-                     if (instance.parameters !== undefined) {
-                     var required = instance.parameters.required;
-                     if (required !== undefined && required && length === 0)
-                     return false;
-                     }
-                     if (length === 0)
-                     return true;*/
                     var isInt = /^-?\d+?$/.test(value);
                     if (isInt) {
                         var int = parseInt(value);
