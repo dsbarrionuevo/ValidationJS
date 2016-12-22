@@ -1,5 +1,5 @@
 /*!
- * ValidatorJS JavaScript Library v1.1.2
+ * ValidatorJS JavaScript Library v1.1.3
  * Project site: https://github.com/dsbarrionuevo/ValidationJS
  *
  * Dependencies:
