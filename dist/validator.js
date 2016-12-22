@@ -436,6 +436,7 @@ var ValidatorJS = (function () {
     Validation.prototype.VALIDATION_TYPE_CHECKBOX_GROUP = 9;
     Validation.prototype.VALIDATION_TYPE_CUSTOM = 10;
     Validation.prototype.VALIDATION_TYPE_COMPARE = 11;
+    Validation.prototype.VALIDATION_TYPE_DATE = 12;
     //
     Validation.prototype.customValidations = [];
     /*
@@ -819,6 +820,28 @@ var ValidatorJS = (function () {
                     //usos posibles: igualdad de strings, check del tipo de dato, mayor menor igual en campos y checkboxs seleccionados, etc...
                     return false;
                     break;
+                case(Validation.prototype.VALIDATION_TYPE_DATE):
+                    if (instance.parameters === undefined) {
+                        return false;
+                    }
+                    var format = instance.parameters.format;
+                    if (format === undefined) {
+                        return false;
+                    }
+                    if (value === "") {
+                        return true;
+                    }
+                    switch (format){
+                        case 'dd/mm':
+                            return /^(0?[1-9]|[12][0-9]|3[01])[\/](0?[1-9]|1[012])$/.test(value);
+                        case 'mm/aaaa':
+                            return /^(0?[1-9]|1[012])[\/]\d{4}$/.test(value);
+                        case 'aaaa':
+                            return /^\d{4}$/.test(value);
+                        default:
+                            return false;
+                    }
+                    break;
                 default:
                     return false;
                     break;
@@ -960,6 +983,7 @@ var ValidatorJS = (function () {
     myself.VALIDATION_TYPE_GROUP = Validation.prototype.VALIDATION_TYPE_GROUP;
     myself.VALIDATION_TYPE_RADIO_GROUP = Validation.prototype.VALIDATION_TYPE_RADIO_GROUP;
     myself.VALIDATION_TYPE_CHECKBOX_GROUP = Validation.prototype.VALIDATION_TYPE_CHECKBOX_GROUP;
+    myself.VALIDATION_TYPE_DATE = Validation.prototype.VALIDATION_TYPE_DATE;
     myself.VALIDATION_TYPE_CUSTOM = Validation.prototype.VALIDATION_TYPE_CUSTOM;
 
     return myself;
