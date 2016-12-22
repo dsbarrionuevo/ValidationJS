@@ -442,17 +442,17 @@ var ValidatorJS = (function () {
      
      */
     /**
-     * Agrega la validaciÛn a la lista de validaciones personalizadas, retorna 
-     * 'true' si ha podido agregar la validaciÛn (sÛlo cuando en la lista de 
-     * validaciones personalizadas no existe ya una validaciÛn con el mismo id),
+     * Agrega la validaci√≥n a la lista de validaciones personalizadas, retorna 
+     * 'true' si ha podido agregar la validaci√≥n (s√≥lo cuando en la lista de 
+     * validaciones personalizadas no existe ya una validaci√≥n con el mismo id),
      * 'false' en caso contratio.
-     * @param {type} customValidation Objecto que representa la validaciÛn 
+     * @param {type} customValidation Objecto que representa la validaci√≥n 
      * personalizada de la siguiente forma: 
      *  customValidacion: {
      *      id: "myId",
      *      method: function(field, parameters){ return boolean; }
      *      }
-     * @returns {Boolean} 'True' si se pudo agregar la validaciÛn personalizada,
+     * @returns {Boolean} 'True' si se pudo agregar la validaci√≥n personalizada,
      * 'false' en caso contratio.
      */
     Validation.prototype.addCustomValidation = function (customValidation) {
@@ -490,8 +490,8 @@ var ValidatorJS = (function () {
         var instance = this;
         this.field = args.field;
         if (instance.field !== null && instance.field !== undefined) {
-            //this.fieldType podrÌa ser: text, password, radio, checkbox, reset, 
-            //button, submit (y los de html5...), tambiÈn textarea, select.
+            //this.fieldType podr√≠a ser: text, password, radio, checkbox, reset, 
+            //button, submit (y los de html5...), tambi√©n textarea, select.
             this.fieldType = getType(instance.field);
         } else {
             this.fieldType = undefined;
@@ -529,24 +529,24 @@ var ValidatorJS = (function () {
                         return value.length > 0;
                     } else if (instance.fieldType === "select") {
                         //en caso de que el select posea cadenas por ejemplo, y 
-                        //queremos setear la cadena "vacio" como opcion vacÌa, 
+                        //queremos setear la cadena "vacio" como opcion vac√≠a, 
                         //debemos setearle como que lo represente el sigueinte 
-                        //invalidRequiredValue, el mismo ser· tratado como cadena.
+                        //invalidRequiredValue, el mismo ser√° tratado como cadena.
                         if (instance.parameters !== undefined && instance.parameters.invalidRequiredValue !== undefined) {
                             return !(value === instance.parameters.invalidRequiredValue);
                         }
-                        //para un uso m·s genÈrico permito que agrega una funciÛn 
-                        //que recibe como par·metro el valor seleccionado en 
-                        //el select y retorna true si es v·lido y false en caso contrario
+                        //para un uso m√°s gen√©rico permito que agrega una funci√≥n 
+                        //que recibe como par√°metro el valor seleccionado en 
+                        //el select y retorna true si es v√°lido y false en caso contrario
                         if (instance.parameters !== undefined && instance.parameters.checkRequiredMethod !== undefined) {
                             return instance.parameters.checkRequiredMethod(value);
                         }
-                        // Valor igual a -1 no es v·lido para un select requerido
+                        // Valor igual a -1 no es v√°lido para un select requerido
                         if (isNaN(value)) {
                             return true;
                         }
                         //como fallback compara con un int y el mismo debe ser 
-                        //distinto a -1 para ser v·lido
+                        //distinto a -1 para ser v√°lido
                         return parseInt(value) !== -1;
                     } else {
                         //para requerir radio o checkboxes deberia pasar un tipoCampo explicito
@@ -575,7 +575,7 @@ var ValidatorJS = (function () {
                             return false;
                         }
                         if (instance.parameters === undefined) {
-                            //porque si no tiene los parametros min y max sÛlo quiere 
+                            //porque si no tiene los parametros min y max s√≥lo quiere 
                             //validar que sea un numero entero
                             return true;
                         }
@@ -862,9 +862,9 @@ var ValidatorJS = (function () {
                 if (optionalParameters.message !== undefined) {
                     message = optionalParameters.message;
                 }
-                //el parametro 'required' agrega autom·ticamente la validaciÛn 
+                //el parametro 'required' agrega autom√°ticamente la validaci√≥n 
                 //de tipo campo requerido, sin embargo no establece un mensaje 
-                //de especÌfico.
+                //de espec√≠fico.
                 if (optionalParameters.required !== undefined && optionalParameters.required === true) {
                     instance.validator.addValidation({
                         field: field,
@@ -877,7 +877,7 @@ var ValidatorJS = (function () {
                 }
                 var hasValidationParameters = false;
                 for (var optionalParameter in optionalParameters) {
-                    //estos par·metros ya estarÌa contemplados...
+                    //estos parÔøΩmetros ya estarÔøΩa contemplados...
                     if (optionalParameter !== "message" && optionalParameter !== "required") {
                         if (hasValidationParameters === false) {
                             parameters = {};
@@ -888,7 +888,7 @@ var ValidatorJS = (function () {
                 }
             }
             //en caso de que el objecto jQuery field sea un selector por clase, 
-            //aquÌ serÌa el lugar donde recorrerÌa y agregarÌa la validaciÛn para 
+            //aqu√≠ ser√≠a el lugar donde recorrer√≠a y agregaria la validaci√≥n para 
             //cada uno de ellos.
             instance.validator.addValidation({
                 field: field,
