@@ -1,5 +1,5 @@
 /*!
- * ValidatorJS JavaScript Library v1.1.3
+ * ValidatorJS JavaScript Library v1.1.4
  * Project site: https://github.com/dsbarrionuevo/ValidationJS
  *
  * Dependencies:
@@ -188,15 +188,15 @@ var ValidatorJS = (function () {
                             for (field in instance.validations) {
                                 if (field === validationObject.field.get(0).id) {
                                     var fieldType = getType(validationObject.field);
-                                    if (checkAttributeMatches(fieldType, ["text", "password", "number", "email"])) {
-                                        validationObject.field.keyup(function (evt) {
-                                            validationFunction(evt, validationObject.field.get(0).id);
-                                        });
-                                    } else {
-                                        validationObject.field.change(function (evt) {
-                                            validationFunction(evt, validationObject.field.get(0).id);
-                                        });
-                                    }
+                                    /*if (checkAttributeMatches(fieldType, ["text", "password", "number", "email"])) {
+                                     validationObject.field.keyup(function (evt) {
+                                     validationFunction(evt, validationObject.field.get(0).id);
+                                     });
+                                     } else {*/
+                                    validationObject.field.change(function (evt) {
+                                        validationFunction(evt, validationObject.field.get(0).id);
+                                    });
+                                    /*}*/
                                 }
                             }
                             break;
@@ -597,32 +597,39 @@ var ValidatorJS = (function () {
                     }
                     return false;
                 case(Validation.prototype.VALIDATION_TYPE_DECIMAL):
-//                    if (isNaN(value)) {
-//                        return false;
-//                    }
                     var length = value.length;
-                    //en algun lugar deberia permitir moficiar si el punto o la 
-                    //coma es el separador de decimales
                     if (length > 0) {
                         var separator = ".";
-                        //aun no funciona muy bien
-                        var min = "1";
-                        var max = "";
+                        var decimales = 2;
                         if (instance.parameters !== undefined && instance.parameters.separator !== undefined) {
                             separator = instance.parameters.separator;
                         }
-                        if (instance.parameters !== undefined && instance.parameters.max !== undefined) {
-                            max = parseInt(instance.parameters.max);
+                        if (separator === ".") {
+                            separator = "\\.";
                         }
-                        if (instance.parameters !== undefined && instance.parameters.min !== undefined) {
-                            min = instance.parameters.min;
+                        if (instance.parameters !== undefined && instance.parameters.decimales !== undefined) {
+                            decimales = parseInt(instance.parameters.decimales);
                         }
-                        //return new RegExp("^-?\\d+(\\b" + separator + "\\b\\d{"+min+","+max+"})?$").test(value);
-                        return new RegExp("^-?\\d+(\\b" + separator + "\\b\\d+)?$").test(value);
+                        if (decimales < 1) {
+                            decimales = 1;
+                        }
+                        var ok = new RegExp("^\\d+(?:" + separator + "\\d{1," + decimales + "})?$").test(value);
+                        if (ok) {
+                            var min = Number.MIN_VALUE;
+                            var max = Number.MAX_VALUE;
+                            if (instance.parameters !== undefined && instance.parameters.max !== undefined) {
+                                max = parseFloat(instance.parameters.max);
+                            }
+                            if (instance.parameters !== undefined && instance.parameters.min !== undefined) {
+                                min = parseFloat(instance.parameters.min);
+                            }
+                            var valueFloat = parseFloat(value);
+                            return min <= valueFloat && valueFloat <= max;
+                        } else {
+                            return false;
+                        }
                     }
-                    //faltan validaciones de min y max, aunque para validar que sea decimal y este entre un rango se podria solucionar usando dos validaciones: type_decimal y type_value
                     return true;
-                    break;
                 case(Validation.prototype.VALIDATION_TYPE_LENGTH):
                     //si solo seteo una longitud maxima y no una minima, el campo 
                     //puede ser vacio y esto lo toma como valido...
@@ -831,7 +838,7 @@ var ValidatorJS = (function () {
                     if (value === "") {
                         return true;
                     }
-                    switch (format){
+                    switch (format) {
                         case 'dd/mm':
                             return /^(0?[1-9]|[12][0-9]|3[01])[\/](0?[1-9]|1[012])$/.test(value);
                         case 'mm/aaaa':
@@ -988,3 +995,4 @@ var ValidatorJS = (function () {
 
     return myself;
 }());
+
