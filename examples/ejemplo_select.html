@@ -1,0 +1,78 @@
+<html>
+    <head>
+        <script type="text/javascript" src="jquery.js"></script>
+        <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="../validator.js"></script>
+        <script type="text/javascript" >
+            $(document).ready(function () {
+
+                function validacionValida(agrs) {
+                    console.log("En el campo " + agrs.field.get(0).id + " la validacion de tipo " + agrs.validation.validationType + " es VALIDA");
+                }
+                function validacionInvalida(agrs) {
+                    console.log("En el campo " + agrs.field.get(0).id + " la validacion de tipo " + agrs.validation.validationType + " es invalida");
+                }
+                function campoValido(agrs) {
+                    console.log("El campo " + agrs.field.get(0).id + " es VALIDO");
+                    if (agrs.field.get(0).tagName.toLowerCase() === "div") {
+                        agrs.field.removeClass("has-error");
+                    } else {
+                        agrs.field.parents("div").first().removeClass("has-error");
+                    }
+                }
+                function campoInvalido(agrs) {
+                    console.log("El campo " + agrs.field.get(0).id + " es invalido");
+                    if (agrs.field.get(0).tagName.toLowerCase() === "div") {
+                        agrs.field.addClass("has-error");
+                    } else {
+                        agrs.field.parents("div").first().addClass("has-error");
+                    }
+                }
+                function formularioValido(args) {
+                    console.log("Formulario VALIDO");
+                    args.event.preventDefault();
+                }
+                function formularioInvalido(args) {
+                    console.log("Formulario invalido");
+                }
+
+                var validator1 = ValidatorJS.createValidator({
+                    form: $("#formulario"),
+                    triggers: [ValidatorJS.VALIDATE_ON_SUBMIT],
+                    validValidation: validacionValida,
+                    invalidValidation: validacionInvalida,
+                    validField: campoValido,
+                    invalidField: campoInvalido,
+                    validForm: formularioValido,
+                    invalidForm: formularioInvalido
+                });
+                validator1.addValidation($("#slc"), ValidatorJS.VALIDATION_TYPE_REQUIRED);
+
+            });
+        </script>
+        <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"/>
+    </head>
+    <body>
+        <div class="container">
+            <h3 style="text-align:center;">Formulario</h3>
+            <form class="form-horizontal" id="formulario">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Número</label>
+                    <div class="col-sm-4 ">
+                        <select id="slc" class="form-control">
+                            <option value="-1">Seleccione</option>
+                            <option value="1">A</option>
+                            <option value="2">B</option>
+                            <option value="3">C</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-primary" id="btnRegistrar">Enviar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </body>
+</html>

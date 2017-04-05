@@ -51,6 +51,12 @@ $(document).ready(function () {
         var formatoHora = (/^\d{2}:\d{2}$/.test(valor));
         if (formatoHora === false) {
             return false;
+        } else {
+            var partes = valor.split(":");
+            if(parseInt(partes[0]) < 0 || parseInt(partes[0]) > 23
+                || parseInt(partes[1]) < 0 || parseInt(partes[1]) > 59){
+                return false;
+            }
         }
         if (parametros === undefined) {
             return formatoHora;
