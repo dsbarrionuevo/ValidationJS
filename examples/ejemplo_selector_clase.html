@@ -46,8 +46,19 @@
                     validForm: formularioValido,
                     invalidForm: formularioInvalido
                 });
-                validator1.addValidation($("#txtNumero"), ValidatorJS.VALIDATION_TYPE_INT);
+                validator1.addValidation($(".texto"), ValidatorJS.VALIDATION_TYPE_INT);
 
+                // Tener en cuenta que al agregar un campo por JS, la validación se debe añadir por más que el campo agregado tenga la misma clase.
+                var cantidadCampos = 3;
+                $("#btnAgregarOtro").click(function(){
+                    cantidadCampos++;
+                    var $input = $('<div class="col-sm-2 "><input type="text" class="form-control texto" id="txtNumero3" name="txtNumero3" placeholder="Número 3" ></div>');
+                    $input.find("input").attr("placeholder", "Número " + cantidadCampos);
+                    $input.find("input").attr("name", "txtNumero" + cantidadCampos);
+                    $input.find("input").attr("id", "txtNumero" + cantidadCampos);
+                    validator1.addValidation($input.find("input"), ValidatorJS.VALIDATION_TYPE_INT);
+                    $("#contenedorCampos").append($input);
+                });
             });
         </script>
         <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"/>
@@ -56,15 +67,23 @@
         <div class="container">
             <h3 style="text-align:center;">Formulario</h3>
             <form class="form-horizontal" id="formulario">
-                <div class="form-group">
+                <div class="form-group" id="contenedorCampos">
                     <label class="col-sm-2 control-label">Número</label>
-                    <div class="col-sm-4 ">
-                        <input type="text" class="form-control texto" id="txtNumero" placeholder="Número" >
+                    <div class="col-sm-2 ">
+                        <input type="text" class="form-control texto" id="txtNumero1" name="txtNumero1" placeholder="Número 1" >
                     </div>
-
+                    <div class="col-sm-2 ">
+                        <input type="text" class="form-control texto" id="txtNumero2" name="txtNumero2" placeholder="Número 2" >
+                    </div>
+                    <div class="col-sm-2 ">
+                        <input type="text" class="form-control texto" id="txtNumero3" name="txtNumero3" placeholder="Número 3" >
+                    </div>
                 </div>
                 <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-10">
+                    <div class="col-sm-offset-2 col-sm-2">
+                        <button type="button" class="btn btn-primary" id="btnAgregarOtro">Agregar otro campo</button>
+                    </div>
+                    <div class="col-sm-2">
                         <button type="submit" class="btn btn-primary" id="btnRegistrar">Enviar</button>
                     </div>
                 </div>
