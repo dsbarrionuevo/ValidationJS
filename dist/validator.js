@@ -1,11 +1,11 @@
 /*!
- * ValidatorJS JavaScript Library v1.1.4
+ * ValidatorJS JavaScript Library v1.1.5
  * Project site: https://github.com/dsbarrionuevo/ValidationJS
  *
  * Dependencies:
  *  jQuery version 1.11.0 or newer: https://jquery.com/
  *
- * Date: 15/06/2016
+ * Date: 05/04/2016
  */
 var ValidatorJS = (function () {
     //check available dependencies
@@ -886,6 +886,12 @@ var ValidatorJS = (function () {
         this.id = id;
         this.validator = validator;
         this.addValidation = function (field, validationType, optionalParameters) {
+            var fields = null;
+            if (field.length > 1) {
+                fields = field;
+                field = $(field.get(0));
+                fields = fields.slice(1, fields.length);
+            }
             var message = undefined;
             var parameters = undefined;
             if (optionalParameters !== undefined) {
@@ -930,6 +936,9 @@ var ValidatorJS = (function () {
                     }
                 ]
             });
+            if(fields !== undefined && fields !== null && fields.length >= 1){
+                this.addValidation(fields, validationType, optionalParameters);
+            }
         };
         this.removeValidation = function (field, validationType) {
             instance.validator.removeValidationForField(field, validationType);

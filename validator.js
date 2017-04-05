@@ -1,11 +1,11 @@
 /*!
- * ValidatorJS JavaScript Library v1.1.4
+ * ValidatorJS JavaScript Library v1.1.5
  * Project site: https://github.com/dsbarrionuevo/ValidationJS
  *
  * Dependencies:
  *  jQuery version 1.11.0 or newer: https://jquery.com/
  *
- * Date: 15/06/2016
+ * Date: 05/04/2016
  */
 var ValidatorJS = (function () {
     //check available dependencies
