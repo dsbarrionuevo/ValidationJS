@@ -47,6 +47,27 @@
                     invalidForm: formularioInvalido
                 });
                 validator1.addValidation($(".texto"), ValidatorJS.VALIDATION_TYPE_INT);
+                
+                ValidatorJS.addCustomValidation("repetido", function (campo, params) {
+                    var textos = [];
+                    $(".texto").each(function () {
+                        var t = $(this).val();
+                        textos.push(t);
+                    });
+                    // Busco repetidos
+                    for (var i = 0; i < textos.length; i++) {
+                        for (var j = 0; j < textos.length; j++) {
+                            if (i !== j) {
+                                if (textos[i] === textos[j]) {
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+                    return true;
+                });
+
+                validator1.addValidation($(".texto"), ValidatorJS.VALIDATION_TYPE_CUSTOM, {id: "repetido", otro: "okay"});
 
                 // Tener en cuenta que al agregar un campo por JS, la validación se debe añadir por más que el campo agregado tenga la misma clase.
                 var cantidadCampos = 3;

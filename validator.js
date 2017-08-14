@@ -1,11 +1,11 @@
 /*!
- * ValidatorJS JavaScript Library v1.1.5
+ * ValidatorJS JavaScript Library v1.1.6
  * Project site: https://github.com/dsbarrionuevo/ValidationJS
  *
  * Dependencies:
  *  jQuery version 1.11.0 or newer: https://jquery.com/
  *
- * Date: 05/04/2016
+ * Date: 14/08/2017
  */
 var ValidatorJS = (function () {
     //check available dependencies
@@ -817,7 +817,7 @@ var ValidatorJS = (function () {
                     if (customValidation === undefined || customValidation === null) {
                         return false;
                     }
-                    var parameters = instance.parameters.parameters;
+                    var parameters = instance.parameters;
                     if (parameters !== undefined) {
                         return customValidation.method(instance.field, parameters);
                     }
