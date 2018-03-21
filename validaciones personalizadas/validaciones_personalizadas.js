@@ -146,4 +146,9 @@ $(document).ready(function () {
         var valor = $input.val();
         return otroValor === valor;
     });
+    
+    ValidatorJS.addCustomValidation("verificar_complejidad", function ($input, parametros) {
+        var valor = $input.val();
+        return VerifyPassword.verifyPasswordComplexity(valor);
+    });
 });
